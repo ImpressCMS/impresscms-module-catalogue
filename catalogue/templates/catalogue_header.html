@@ -1,0 +1,14 @@
+<{if $catalogue_show_breadcrumb}>
+	<div class="catalogue_headertable">
+		<{if $catalogue_module_home}>
+			<span class="catalogue_modulename"><{$catalogue_module_home}></span>
+		<{/if}>
+		<{if $catalogue_category_path}>
+			<span class="catalogue_breadcrumb">
+			<{if $catalogue_module_home}>
+				&gt;
+			<{/if}>
+			<{$catalogue_category_path}></span>
+		<{/if}>
+	</div>
+<{/if}>
