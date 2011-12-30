@@ -1,0 +1,67 @@
+<{includeq file='db:catalogue_header.html'}>
+
+<!-- Single item view -->
+
+<{if $catalogue_item}>
+<div>
+<h2><{$catalogue_item.title}><{if $catalogue_item.price}> (<{$catalogue_base_currency}> <{$catalogue_item.price}>)<{/if}></h2>
+<{if $catalogue_item.image}>
+	<div class="catalogue_float_right">
+			<{resized_image file=$catalogue_item.image width=$catalogue_item.image_width
+				height=$catalogue_item.image_height fit="inside"}>
+	</div>
+<{/if}>
+<{if $catalogue_item.description}><div class="catalogue_separator"><{$catalogue_item.description}></div><{/if}>
+<{if $catalogue_item.ecommerce_link}><div class="catalogue_separator"><{$catalogue_item.ecommerce_link}></div><{/if}>
+<{if $catalogue_view_cart}><div class="catalogue_separator"><{$catalogue_view_cart}></div><{/if}>
+</div>
+<{/if}>
+
+<!-- Item index view -->
+
+<{if $catalogue_index_view}>
+	<h2><a href="<{$catalogue_rss_link}>" title="<{$catalogue_rss_title}>">
+		<img src="./images/rss.png" alt="RSS" /></a> 
+		<{if $catalogue_tag_name}><{$catalogue_tag_name}><{/if}>
+	</h2>
+
+	<!-- tag select box -->
+		<{if $catalogue_show_tag_select_box}>
+			<{if $catalogue_tag_select_box}>
+				<div>
+					<{$catalogue_tag_select_box}>
+				</div>
+			<{/if}>
+		<{/if}>
+<{/if}>
+
+<{if $catalogue_item_rows}>
+	<div>
+		<{foreach item=catalogue_row from=$catalogue_item_rows}>
+			<div <{$catalogue_row_margins}>>
+				<{foreach item=catalogue_item from=$catalogue_row}>
+					<div <{$catalogue_item_margins}>>
+						<a href="<{$catalogue_item.itemUrl}>" title="<{$catalogue_item.title}>">
+							<{resized_image file=$catalogue_item.image width=$catalogue_item.thumbnail_width 
+								height=$catalogue_item.thumbnail_height fit="inside"}>
+						</a>
+						<{if $catalogue_item.price}>
+						<p class="catalogue_price"><{$catalogue_base_currency}><{$catalogue_item.price}></p>
+						<{/if}>	
+					</div>
+							
+				<{/foreach}>
+			</div>
+		<{/foreach}>
+	</div>
+	<{if $catalogue_navbar}>
+		<div><{$catalogue_navbar}></div>
+	<{/if}>
+<{/if}>
+
+<{if $catalogue_item_table}>
+	<h2><{$catalogue_title}></h2>
+	<{$catalogue_item_table}>
+<{/if}>
+
+<{includeq file='db:catalogue_footer.html'}>
