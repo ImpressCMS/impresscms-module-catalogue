@@ -19,8 +19,8 @@ function catalogue_item_recent_show($options) {
 		. '/include/common.php');
 	$catalogue_item_handler = icms_getModuleHandler('item',
 		basename(dirname(dirname(__FILE__))), 'catalogue');
-	$criteria = new CriteriaCompo();
-	$criteria->add(new Criteria('online_status', true));
+	$criteria = new icms_db_criteria_Compo();
+	$criteria->add(new icms_db_criteria_Item('online_status', true));
 	$criteria->setStart(0);
 	$criteria->setLimit($options[0]);
 	$criteria->setSort('date');

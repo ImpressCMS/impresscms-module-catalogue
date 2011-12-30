@@ -1,6 +1,7 @@
 <?php
+
 /**
-* About page of the module
+* Class representing Catalogue order handler objects
 *
 * @copyright	Copyright Madfish (Simon Wilkinson)
 * @license		http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU General Public License (GPL)
@@ -10,7 +11,13 @@
 * @version		$Id$
 */
 
-include_once("admin_header.php");
+class CatalogueOrderHandler extends icms_ipf_Handler {
 
-$aboutObj = new icms_ipf_About();
-$aboutObj->render();
+	/**
+	 * Constructor
+	 */
+	public function __construct(& $db) {
+		parent::__construct($db, 'order', 'order_id', 'item_id', 'number_ordered',
+			'catalogue');
+	}
+}

@@ -69,7 +69,7 @@ if($itemObj && !$itemObj->isNew()) {
 	/**
 	 * Generating meta information for this page
 	 */
-	$icms_metagen = new IcmsMetagen($itemObj->getVar('title'),
+	$icms_metagen = new icms_ipf_Metagen($itemObj->getVar('title'),
 	$itemObj->getVar('meta_keywords','n'),
 	$itemObj->getVar('meta_description', 'n'));
 	$icms_metagen->createMetaTags();
@@ -93,9 +93,9 @@ if($itemObj && !$itemObj->isNew()) {
 		$form = '';
 		$tag_buffer = $tagList = array();
 		$sprockets_tag_handler = icms_getModuleHandler('tag',
-				$sprocketsModule->dirname(), 'sprockets');
+				$sprocketsModule->getVar('dirname'), 'sprockets');
 		$sprockets_taglink_handler = icms_getModuleHandler('taglink', 
-			$sprocketsModule->dirname(), 'sprockets');
+			$sprocketsModule->getVar('dirname'), 'sprockets');
 
 		// prepare buffers to reduce queries
 		$tag_buffer = $sprockets_tag_handler->getObjects(null, true, true);
@@ -154,7 +154,7 @@ if($itemObj && !$itemObj->isNew()) {
 				. " WHERE `item_id` = `iid`"
 				. " AND `online_status` = '1'"
 				. " AND `tid` = '" . $clean_tag_id . "'"
-				. " AND `mid` = '" . $catalogueModule->mid() . "'"
+				. " AND `mid` = '" . $catalogueModule->getVar('mid') . "'"
 				. " AND `item` = 'item'";
 
 		$result = $xoopsDB->query($group_query);
@@ -179,7 +179,7 @@ if($itemObj && !$itemObj->isNew()) {
 				. " WHERE `item_id` = `iid`"
 				. " AND `online_status` = '1'"
 				. " AND `tid` = '" . $clean_tag_id . "'"
-				. " AND `mid` = '" . $catalogueModule->mid() . "'"
+				. " AND `mid` = '" . $catalogueModule->getVar('mid') . "'"
 				. " AND `item` = 'item'"
 				. " ORDER BY `weight` ASC"
 				. " LIMIT " . $clean_start . ", " . $catalogueConfig['number_items_per_page'];
@@ -200,8 +200,8 @@ if($itemObj && !$itemObj->isNew()) {
 
 	} else {
 
-		$criteria = new CriteriaCompo();
-		$criteria->add(new Criteria('online_status', true));
+		$criteria = new icms_db_criteria_Compo();
+		$criteria->add(new icms_db_criteria_Item('online_status', true));
 
 		// grab the total item count first
 		$item_count = $catalogue_item_handler->getCount($criteria);
@@ -246,7 +246,7 @@ if($itemObj && !$itemObj->isNew()) {
 	} else {
 		$extra_arg = false;
 	}
-	$pagenav = new XoopsPageNav($item_count, $catalogueConfig['number_items_per_page'],
+	$pagenav = new icms_view_PageNav($item_count, $catalogueConfig['number_items_per_page'],
 			$clean_start, 'start', $extra_arg);
 
 	// assign to template

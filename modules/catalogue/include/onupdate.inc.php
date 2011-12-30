@@ -54,8 +54,8 @@ function catalogue_authorise_mimetypes() {
 		$allowed_modules = array();
 		$mimetypeObj = '';
 
-		$criteria = new CriteriaCompo();
-		$criteria->add(new Criteria('extension', $extension));
+		$criteria = new icms_db_criteria_Compo();
+		$criteria->add(new icms_db_criteria_Item('extension', $extension));
 		$mimetypeObj = array_shift($system_mimetype_handler->getObjects($criteria));
 
 		if ($mimetypeObj) {

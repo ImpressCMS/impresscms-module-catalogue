@@ -36,17 +36,17 @@ if (isset($catalogueModule)) {
 	$i++;
 	$headermenu[$i]['title'] = _PREFERENCES;
 	$headermenu[$i]['link'] = '../../system/admin.php?fct=preferences&amp;op=showmod&amp;mod=' .
-		$catalogueModule->mid();
+		$catalogueModule->getVar('mid');
 	
 	$i++;
 	$headermenu[$i]['title'] = _MI_CATALOGUE_TEMPLATES;
 	$headermenu[$i]['link'] = '../../system/admin.php?fct=tplsets&op=listtpl&tplset='
-		. $icmsConfig['template_set'] . '&moddir=' . $catalogueModule->dirname();
+		. $icmsConfig['template_set'] . '&moddir=' . $catalogueModule->getVar('dirname');
 
 	$i++;
 	$headermenu[$i]['title'] = _CO_ICMS_UPDATE_MODULE;
 	$headermenu[$i]['link'] = ICMS_URL . '/modules/system/admin.php?fct=modulesadmin&op=update&module='
-		. $catalogueModule->dirname();
+		. $catalogueModule->getVar('dirname');
 
 	$i++;
 	$headermenu[$i]['title'] = _MI_CATALOGUE_MANUAL;

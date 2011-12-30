@@ -65,8 +65,8 @@ if (empty($clean_tag_id) || !$sprocketsModule) {
 	$catalogue_feed->atom_link = '"' . CATALOGUE_URL . 'rss.php"';
 
 	// use criteria to retrieve the most recent (online) items as per module preferences
-	$criteria = new CriteriaCompo();
-	$criteria->add(new Criteria('online_status', true));
+	$criteria = new icms_db_criteria_Compo();
+	$criteria->add(new icms_db_criteria_Item('online_status', true));
 	$criteria->setStart(0);
 	$criteria->setLimit($catalogueConfig['number_rss_items']);
 	$criteria->setSort('date');
@@ -107,7 +107,7 @@ if (empty($clean_tag_id) || !$sprocketsModule) {
 			. " WHERE `item_id` = `iid`"
 			. " AND `online_status` = '1'"
 			. " AND `tid` = '" . $clean_tag_id . "'"
-			. " AND `mid` = '" . $catalogueModule->mid() . "'"
+			. " AND `mid` = '" . $catalogueModule->getVar('mid') . "'"
 			. " AND `item` = 'item'"
 			. " ORDER BY `date` DESC"
 			. " LIMIT " . $catalogueConfig['number_rss_items'];

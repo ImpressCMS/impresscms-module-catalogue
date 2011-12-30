@@ -106,8 +106,8 @@ if (in_array($clean_op,$valid_op,true)) {
   		$catalogueModule->displayAdminMenu(0, _AM_CATALOGUE_ORDERS);
 
   		include_once ICMS_ROOT_PATH."/kernel/icmspersistabletable.php";
-  		$objectTable = new IcmsPersistableTable($catalogue_order_handler);
-  		$objectTable->addColumn(new IcmsPersistableColumn('item_id'));
+  		$objectTable = new icms_ipf_view_Table($catalogue_order_handler);
+  		$objectTable->addColumn(new icms_ipf_view_Column('item_id'));
 
   		$objectTable->addIntroButton('addorder', 'order.php?op=mod', _AM_CATALOGUE_ORDER_CREATE);
   		$icmsAdminTpl->assign('catalogue_order_table', $objectTable->fetch());

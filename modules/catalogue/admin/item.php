@@ -157,10 +157,10 @@ if (in_array($clean_op,$valid_op,true)){
 			
 			$tag_select_box = '';
 			$taglink_array = $tagged_item_list = array();
-			$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->dirname(),
+			$sprockets_tag_handler = icms_getModuleHandler('tag', $sprocketsModule->getVar('dirname'),
 				'sprockets');
 			$sprockets_taglink_handler = icms_getModuleHandler('taglink', 
-					$sprocketsModule->dirname(), 'sprockets');
+					$sprocketsModule->getVar('dirname'), 'sprockets');
 			$catalogueModule = icms_getModuleInfo(basename(dirname(dirname(__FILE__))));
 			
 			$tag_select_box = $sprockets_tag_handler->getTagSelectBox('item.php', $clean_tag_id,
@@ -173,10 +173,10 @@ if (in_array($clean_op,$valid_op,true)){
 			if ($clean_tag_id) {
 				
 				// get a list of item IDs belonging to this tag
-				$criteria = new CriteriaCompo();
-				$criteria->add(new Criteria('tid', $clean_tag_id));
-				$criteria->add(new Criteria('mid', $catalogueModule->mid()));
-				$criteria->add(new Criteria('item', 'item'));
+				$criteria = new icms_db_criteria_Compo();
+				$criteria->add(new icms_db_criteria_Item('tid', $clean_tag_id));
+				$criteria->add(new icms_db_criteria_Item('mid', $catalogueModule->getVar('mid')));
+				$criteria->add(new icms_db_criteria_Item('item', 'item'));
 				$taglink_array = $sprockets_taglink_handler->getObjects($criteria);
 				foreach ($taglink_array as $taglink) {
 					$tagged_item_list[] = $taglink->getVar('iid');
@@ -184,8 +184,8 @@ if (in_array($clean_op,$valid_op,true)){
 				$tagged_item_list = "('" . implode("','", $tagged_item_list) . "')";
 				
 				// use the list to filter the persistable table
-				$criteria = new CriteriaCompo();
-				$criteria->add(new Criteria('item_id', $tagged_item_list, 'IN'));
+				$criteria = new icms_db_criteria_Compo();
+				$criteria->add(new icms_db_criteria_Item('item_id', $tagged_item_list, 'IN'));
 			}
 		}
 		
@@ -194,13 +194,13 @@ if (in_array($clean_op,$valid_op,true)){
 		}
 
   		include_once ICMS_ROOT_PATH."/kernel/icmspersistabletable.php";
-  		$objectTable = new IcmsPersistableTable($catalogue_item_handler, $criteria);
-		$objectTable->addColumn(new IcmsPersistableColumn('online_status', 'center', true));
-  		$objectTable->addColumn(new IcmsPersistableColumn('title'));
-		$objectTable->addColumn(new IcmsPersistableColumn('identifier'));
-		$objectTable->addColumn(new IcmsPersistableColumn('price'));
-		$objectTable->addColumn(new IcmsPersistableColumn('counter'));
-		$objectTable->addColumn(new IcmsPersistableColumn('weight', 'center', true,
+  		$objectTable = new icms_ipf_view_Table($catalogue_item_handler, $criteria);
+		$objectTable->addColumn(new icms_ipf_view_Column('online_status', 'center', true));
+  		$objectTable->addColumn(new icms_ipf_view_Column('title'));
+		$objectTable->addColumn(new icms_ipf_view_Column('identifier'));
+		$objectTable->addColumn(new icms_ipf_view_Column('price'));
+		$objectTable->addColumn(new icms_ipf_view_Column('counter'));
+		$objectTable->addColumn(new icms_ipf_view_Column('weight', 'center', true,
 			'getWeightControl'));
 		$objectTable->addFilter('online_status', 'online_status_filter');
   		$objectTable->addIntroButton('additem', 'item.php?op=mod', _AM_CATALOGUE_ITEM_CREATE);
