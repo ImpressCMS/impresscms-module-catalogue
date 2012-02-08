@@ -132,7 +132,7 @@ $member_handler = icms::handler("icms_member");
 
 foreach($itemArray as $item) {
 	$flattened_item = $item->toArray();
-	$user = & $member_handler->getUser($item->getVar('submitter', 'e'));
+	$user = $member_handler->getUser($item->getVar('submitter', 'e'));
 	$creator = $user->getVar('uname');
 	
 	$creator = encode_entities($creator);
