@@ -262,6 +262,7 @@ if($itemObj && !$itemObj->isNew()) {
 }
 
 $icmsTpl->assign('catalogue_show_breadcrumb', icms::$module->config['show_breadcrumb']);
+$icmsTpl->assign('catalogue_page_title', icms::$module->getVar('name'));
 $icmsTpl->assign('catalogue_module_home', catalogue_getModuleName(TRUE, TRUE));
 
 include_once 'footer.php';

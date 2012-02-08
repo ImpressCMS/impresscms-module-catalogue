@@ -22,10 +22,6 @@
 <!-- Item index view -->
 
 <{if $catalogue_index_view}>
-	<h2><a href="<{$catalogue_rss_link}>" title="<{$catalogue_rss_title}>">
-		<img src="./images/rss.png" alt="RSS" /></a> 
-		<{if $catalogue_tag_name}><{$catalogue_tag_name}><{/if}>
-	</h2>
 
 	<!-- tag select box -->
 		<{if $catalogue_show_tag_select_box}>
@@ -61,7 +57,7 @@
 	<{/if}>
 
 	<{if $catalogue_item_table}>
-		<h2><{$catalogue_title}></h2>
+		<h1><{$catalogue_title}></h1>
 		<{$catalogue_item_table}>
 	<{/if}>
 

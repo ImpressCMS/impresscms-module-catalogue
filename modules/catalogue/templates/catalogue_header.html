@@ -11,4 +11,9 @@
 			<{$catalogue_category_path}></span>
 		<{/if}>
 	</div>
+<{else}>
+	<h1><a href="<{$catalogue_rss_link}>" title="<{$catalogue_rss_title}>">
+		<img src="./images/rss.png" alt="RSS" /></a> 
+		<{$catalogue_page_title}><{if $catalogue_tag_name}> - <{$catalogue_tag_name}><{/if}>
+	</h1>
 <{/if}>
