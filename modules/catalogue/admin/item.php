@@ -130,11 +130,16 @@ if (in_array($clean_op,$valid_op,TRUE)){
 			$itemObj = $catalogue_item_handler->get($clean_item_id);
 			if ($itemObj->id()) {
 				
+				// get relative path to document root for this ICMS install
+				// this is required to call the image correctly if ICMS is installed in a subdirectory
+				$script_name = getenv("SCRIPT_NAME");
+				$document_root = str_replace('modules/' . icms::$module->getVar('dirname') . '/item.php', '', $script_name);
+
 				// prepare item image for display
 				$image = $itemObj->getVar('image', 'e');
 				if ($image) {
-					$image = '<img src="/uploads/' . basename(dirname(dirname(__FILE__)))
-						. '/item/' . $image . '" alt="' . $itemObj->title() . '" />';
+					$image = '<img src="' . ICMS_URL . '/uploads/' . icms::$module->getVar('dirname') 
+							. '/item/' . $image . '" ' . 'alt="' . $itemObj->title() . '" />';
 					$itemObj->setVar('image', $image);
 				}
 
