@@ -21,7 +21,6 @@
  * @return array containing 'name' and 'url' of the related item
  */
 function catalogue_notify_iteminfo($category, $item_id){
-    global $icmsModule, $icmsModuleConfig, $icmsConfig;
 
     if ($category == 'global') {
         $item['name'] = '';

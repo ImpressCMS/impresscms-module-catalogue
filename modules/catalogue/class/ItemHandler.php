@@ -56,8 +56,8 @@ class CatalogueItemHandler extends icms_ipf_Handler {
 			}
 			$criteria->add($criteriaKeywords);
 		}
-		$criteria->add(new icms_db_criteria_Item('online_status', true));
-		return $this->getObjects($criteria, true, false);
+		$criteria->add(new icms_db_criteria_Item('online_status', TRUE));
+		return $this->getObjects($criteria, TRUE, FALSE);
 	}
 	
 	/**
@@ -68,14 +68,14 @@ class CatalogueItemHandler extends icms_ipf_Handler {
 	public function changeVisible($item_id) {
 		$visibility = '';
 		$itemObj = $this->get($item_id);
-		if ($itemObj->getVar('online_status', 'e') == true) {
+		if ($itemObj->getVar('online_status', 'e') == TRUE) {
 			$itemObj->setVar('online_status', 0);
 			$visibility = 0;
 		} else {
 			$itemObj->setVar('online_status', 1);
 			$visibility = 1;
 		}
-		$this->insert($itemObj, true);
+		$this->insert($itemObj, TRUE);
 		return $visibility;
 
 	}
@@ -93,7 +93,7 @@ class CatalogueItemHandler extends icms_ipf_Handler {
 		$itemObj = $this->get($item_id);
 		if ($itemObj && !$itemObj->isNew()) {
 			$itemObj->setVar('item_comments', $total_num);
-			$this->insert($itemObj, true);
+			$this->insert($itemObj, TRUE);
 		}
 	}
 
@@ -107,24 +107,23 @@ class CatalogueItemHandler extends icms_ipf_Handler {
 		
 		$sprockets_taglink_handler = '';
 		
-		
 		// triggers notification event for subscribers
 		if (!$obj->getVar('item_notification_sent') && $obj->getVar('online_status', 'e') == 1) {
 			$obj->sendNotifItemPublished();
-			$obj->setVar('item_notification_sent', true);
+			$obj->setVar('item_notification_sent', TRUE);
 			$this->insert ($obj);
 		}
 		
 		// storing tags
 		$sprocketsModule = icms_getModuleInfo('sprockets');
 		
-		if ($sprocketsModule) {
+		if ($_SERVER['REQUEST_METHOD'] == 'POST' && icms_get_module_status("sprockets")) {
 			$sprockets_taglink_handler = icms_getModuleHandler('taglink', 
-					$sprocketsModule->getVar('dirname'), 'sprockets');
+				$sprocketsModule->getVar('dirname'), 'sprockets');
 			$sprockets_taglink_handler->storeTagsForObject($obj);
 		}
 		
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -135,10 +134,8 @@ class CatalogueItemHandler extends icms_ipf_Handler {
 	 * @return bool
 	 */
 	protected function afterDelete(& $obj) {
-		global $icmsModule;
-		$notification_handler =& xoops_gethandler('notification');
-		$module_handler = xoops_getHandler('module');
-		$module = $module_handler->getByDirname(basename(dirname(dirname(__FILE__))));
+		$notification_handler = icms::handler("icms_data_notification");
+		$module = icms::handler("icms_module")->getByDirname(basename(dirname(dirname(__FILE__))));
 		$module_id = $module->getVar('mid');
 		$category = 'global';
 		$item_id = $obj->id();
@@ -148,12 +145,12 @@ class CatalogueItemHandler extends icms_ipf_Handler {
 		
 		// delete taglinks
 		$sprocketsModule = icms_getModuleInfo('sprockets');
-		if ($sprocketsModule) {
+		if (icms_get_module_status("sprockets")) {
 			$sprockets_taglink_handler = icms_getModuleHandler('taglink',
 					$sprocketsModule->getVar('dirname'), 'sprockets');
 			$sprockets_taglink_handler->deleteAllForObject(&$obj);
 		}
 
-		return true;
+		return TRUE;
 	}
 }

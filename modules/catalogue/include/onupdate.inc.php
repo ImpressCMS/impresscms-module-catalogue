@@ -75,19 +75,13 @@ function catalogue_authorise_mimetypes() {
 }
 
 function icms_module_update_catalogue($module) {
-	/**
-	 * Using the IcmsDatabaseUpdater to automaticallly manage the database upgrade dynamically
-	 * according to the class defined in the module
-	 */
-	$icmsDatabaseUpdater = XoopsDatabaseFactory::getDatabaseUpdater();
-	$icmsDatabaseUpdater->moduleUpgrade($module);
-    return true;
+    return TRUE;
 }
 
 function icms_module_install_catalogue($module) {
 	// create an uploads directory for images
 	$path = ICMS_ROOT_PATH . '/uploads/' . basename(dirname(dirname(__FILE__)));
-	$directory_exists = $writeable = true;
+	$directory_exists = $writeable = TRUE;
 
 	// check if upload directory exists, make one if not
 	if (!is_dir($path)) {
@@ -97,5 +91,5 @@ function icms_module_install_catalogue($module) {
 	// authorise some audio mimetypes for convenience
 	catalogue_authorise_mimetypes();
 
-	return true;
+	return TRUE;
 }

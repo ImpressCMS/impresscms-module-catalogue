@@ -20,12 +20,12 @@ function catalogue_item_recent_show($options) {
 	$catalogue_item_handler = icms_getModuleHandler('item',
 		basename(dirname(dirname(__FILE__))), 'catalogue');
 	$criteria = new icms_db_criteria_Compo();
-	$criteria->add(new icms_db_criteria_Item('online_status', true));
+	$criteria->add(new icms_db_criteria_Item('online_status', TRUE));
 	$criteria->setStart(0);
 	$criteria->setLimit($options[0]);
 	$criteria->setSort('date');
 	$criteria->setOrder('DESC');
-	$block['catalogue_items'] = $catalogue_item_handler->getObjects($criteria, true, true);
+	$block['catalogue_items'] = $catalogue_item_handler->getObjects($criteria, TRUE, TRUE);
 	foreach ($block['catalogue_items'] as $key => &$value) {
 		$date = $value->getVar('date', 'e');
 		$value = $value->toArray();

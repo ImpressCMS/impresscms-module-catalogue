@@ -58,13 +58,7 @@ if (isset($_POST['op'])) $clean_op = htmlentities($_POST['op']);
 $clean_item_id = isset($_GET['item_id']) ? (int) $_GET['item_id'] : 0 ;
 $clean_tag_id = isset($_GET['tag_id']) ? intval($_GET['tag_id']) : 0 ;
 
-/**
- * in_array() is a native PHP function that will determine if the value of the
- * first argument is found in the array listed in the second argument. Strings
- * are case sensitive and the 3rd argument determines whether type matching is
- * required
-*/
-if (in_array($clean_op,$valid_op,true)){
+if (in_array($clean_op,$valid_op,TRUE)){
   switch ($clean_op) {
   	case "mod":
   	case "changedField":
@@ -74,15 +68,13 @@ if (in_array($clean_op,$valid_op,true)){
   		edititem($clean_item_id);
   		break;
   	case "additem":
-        include_once ICMS_ROOT_PATH."/kernel/icmspersistablecontroller.php";
-        $controller = new IcmsPersistableController($catalogue_item_handler);
+        $controller = new icms_ipf_Controller($catalogue_item_handler);
   		$controller->storeFromDefaultForm(_AM_CATALOGUE_ITEM_CREATED, _AM_CATALOGUE_ITEM_MODIFIED);
 
   		break;
 
   	case "del":
-  	    include_once ICMS_ROOT_PATH."/kernel/icmspersistablecontroller.php";
-        $controller = new IcmsPersistableController($catalogue_item_handler);
+        $controller = new icms_ipf_Controller($catalogue_item_handler);
   		$controller->handleObjectDeletion();
 
   		break;
@@ -107,12 +99,12 @@ if (in_array($clean_op,$valid_op,true)){
 	
 	case "changeWeight":
 		foreach ($_POST['CatalogueItem_objects'] as $key => $value) {
-			$changed = false;
+			$changed = FALSE;
 			$itemObj = $catalogue_item_handler->get($value);
 
 			if ($itemObj->getVar('weight', 'e') != $_POST['weight'][$key]) {
 				$itemObj->setVar('weight', intval($_POST['weight'][$key]));
-				$changed = true;
+				$changed = TRUE;
 			}
 			if ($changed) {
 				$catalogue_item_handler->insert($itemObj);
@@ -153,7 +145,7 @@ if (in_array($clean_op,$valid_op,true)){
 			}
 		}
 		
-		if ($sprocketsModule) {
+		if (icms_get_module_status("sprockets")) {
 			
 			$tag_select_box = '';
 			$taglink_array = $tagged_item_list = array();
@@ -164,7 +156,7 @@ if (in_array($clean_op,$valid_op,true)){
 			$catalogueModule = icms_getModuleInfo(basename(dirname(dirname(__FILE__))));
 			
 			$tag_select_box = $sprockets_tag_handler->getTagSelectBox('item.php', $clean_tag_id,
-				_AM_CATALOGUE_ITEM_ALL_ITEMS);
+				_AM_CATALOGUE_ITEM_ALL_ITEMS, TRUE, icms::$module->getVar('mid'));
 			if (!empty($tag_select_box)) {
 				echo '<h3>' . _AM_CATALOGUE_ITEM_FILTER_BY_TAG . '</h3>';
 				echo $tag_select_box;
@@ -193,18 +185,17 @@ if (in_array($clean_op,$valid_op,true)){
 			$criteria = null;
 		}
 
-  		include_once ICMS_ROOT_PATH."/kernel/icmspersistabletable.php";
   		$objectTable = new icms_ipf_view_Table($catalogue_item_handler, $criteria);
-		$objectTable->addColumn(new icms_ipf_view_Column('online_status', 'center', true));
+		$objectTable->addColumn(new icms_ipf_view_Column('online_status', 'center', TRUE));
   		$objectTable->addColumn(new icms_ipf_view_Column('title'));
 		$objectTable->addColumn(new icms_ipf_view_Column('identifier'));
 		$objectTable->addColumn(new icms_ipf_view_Column('price'));
 		$objectTable->addColumn(new icms_ipf_view_Column('counter'));
-		$objectTable->addColumn(new icms_ipf_view_Column('weight', 'center', true,
+		$objectTable->addColumn(new icms_ipf_view_Column('weight', 'center', TRUE,
 			'getWeightControl'));
 		$objectTable->addFilter('online_status', 'online_status_filter');
   		$objectTable->addIntroButton('additem', 'item.php?op=mod', _AM_CATALOGUE_ITEM_CREATE);
-		$objectTable->addActionButton('changeWeight', false, _SUBMIT);
+		$objectTable->addActionButton('changeWeight', FALSE, _SUBMIT);
   		$icmsAdminTpl->assign('catalogue_item_table', $objectTable->fetch());
   		$icmsAdminTpl->display('db:catalogue_admin_item.html');
   		break;

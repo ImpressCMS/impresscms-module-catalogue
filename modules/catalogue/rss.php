@@ -29,7 +29,7 @@ function encode_entities($field) {
 global $catalogueConfig;
 $sort_order = '';
 
-$clean_tag_id = isset($_GET['tag_id']) ? intval($_GET['tag_id']) : false;
+$clean_tag_id = isset($_GET['tag_id']) ? intval($_GET['tag_id']) : FALSE;
 
 include_once ICMS_ROOT_PATH . '/modules/' . basename(dirname(__FILE__))
 	. '/class/icmsfeed.php';
@@ -38,15 +38,15 @@ $catalogue_item_handler = icms_getModuleHandler('item', basename(dirname(__FILE_
 $catalogueModule = icms_getModuleInfo(basename(dirname(__FILE__)));
 $sprocketsModule = icms_getModuleInfo('sprockets');
 
-if ($sprocketsModule) {
+if (icms_get_module_status("sprockets")) {
 	$sprockets_taglink_handler = icms_getModuleHandler('taglink',
-			$sprocketsModule->dirname(), 'sprockets');
+			$sprocketsModule->getVar('dirname'), 'sprockets');
 	$sprockets_tag_handler = icms_getModuleHandler('tag',
-			$sprocketsModule->dirname(), 'sprockets');
+			$sprocketsModule->getVar('dirname'), 'sprockets');
 }
 
 // generates a feed of recent items across all tags
-if (empty($clean_tag_id) || !$sprocketsModule) {
+if (empty($clean_tag_id) || !icms_get_module_status("sprockets")) {
 	$feed_title = _CO_CATALOGUE_NEW;
 	$site_name = encode_entities($icmsConfig['sitename']);
 
@@ -55,7 +55,7 @@ if (empty($clean_tag_id) || !$sprocketsModule) {
 	$catalogue_feed->description = _CO_CATALOGUE_NEW_DSC . $site_name . '.';
 	$catalogue_feed->language = _LANGCODE;
 	$catalogue_feed->charset = _CHARSET;
-	$catalogue_feed->category = $catalogueModule->name();
+	$catalogue_feed->category = $catalogueModule->getVar('name');
 
 	$url = ICMS_URL . 'images/logo.gif';
 	$catalogue_feed->image = array('title' => $catalogue_feed->title, 'url' => $url,
@@ -66,7 +66,7 @@ if (empty($clean_tag_id) || !$sprocketsModule) {
 
 	// use criteria to retrieve the most recent (online) items as per module preferences
 	$criteria = new icms_db_criteria_Compo();
-	$criteria->add(new icms_db_criteria_Item('online_status', true));
+	$criteria->add(new icms_db_criteria_Item('online_status', TRUE));
 	$criteria->setStart(0);
 	$criteria->setLimit($catalogueConfig['number_rss_items']);
 	$criteria->setSort('date');
@@ -88,7 +88,7 @@ if (empty($clean_tag_id) || !$sprocketsModule) {
 	$catalogue_feed->description = $tag_description;
 	$catalogue_feed->language = _LANGCODE;
 	$catalogue_feed->charset = _CHARSET;
-	$catalogue_feed->category = $catalogueModule->name();
+	$catalogue_feed->category = $catalogueModule->getVar('name');
 
 	$url = ICMS_URL . 'images/logo.gif';
 	$catalogue_feed->image = array('title' => $catalogue_feed->title, 'url' => $url,
@@ -128,7 +128,7 @@ if (empty($clean_tag_id) || !$sprocketsModule) {
 }
 
 // prepare an array of items
-$member_handler = & xoops_gethandler('member');
+$member_handler = icms::handler("icms_member");
 
 foreach($itemArray as $item) {
 	$flattened_item = $item->toArray();

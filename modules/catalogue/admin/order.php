@@ -61,7 +61,7 @@ $clean_order_id = isset($_GET['order_id']) ? (int) $_GET['order_id'] : 0 ;
  * are case sensitive and the 3rd argument determines whether type matching is
  * required
 */
-if (in_array($clean_op,$valid_op,true)) {
+if (in_array($clean_op,$valid_op,TRUE)) {
   switch ($clean_op) {
   	case "mod":
   	case "changedField":
@@ -71,15 +71,13 @@ if (in_array($clean_op,$valid_op,true)) {
   		editorder($clean_order_id);
   		break;
   	case "addorder":
-          include_once ICMS_ROOT_PATH."/kernel/icmspersistablecontroller.php";
-          $controller = new IcmsPersistableController($catalogue_order_handler);
-  		$controller->storeFromDefaultForm(_AM_CATALOGUE_ORDER_CREATED, _AM_CATALOGUE_ORDER_MODIFIED);
+          $controller = new icms_ipf_Controller($catalogue_order_handler);
+			$controller->storeFromDefaultForm(_AM_CATALOGUE_ORDER_CREATED, _AM_CATALOGUE_ORDER_MODIFIED);
 
   		break;
 
   	case "del":
-  	    include_once ICMS_ROOT_PATH."/kernel/icmspersistablecontroller.php";
-          $controller = new IcmsPersistableController($catalogue_order_handler);
+          $controller = new icms_ipf_Controller($catalogue_order_handler);
   		$controller->handleObjectDeletion();
 
   		break;
@@ -105,10 +103,8 @@ if (in_array($clean_op,$valid_op,true)) {
 
   		$catalogueModule->displayAdminMenu(0, _AM_CATALOGUE_ORDERS);
 
-  		include_once ICMS_ROOT_PATH."/kernel/icmspersistabletable.php";
   		$objectTable = new icms_ipf_view_Table($catalogue_order_handler);
   		$objectTable->addColumn(new icms_ipf_view_Column('item_id'));
-
   		$objectTable->addIntroButton('addorder', 'order.php?op=mod', _AM_CATALOGUE_ORDER_CREATE);
   		$icmsAdminTpl->assign('catalogue_order_table', $objectTable->fetch());
   		$icmsAdminTpl->display('db:catalogue_admin_order.html');

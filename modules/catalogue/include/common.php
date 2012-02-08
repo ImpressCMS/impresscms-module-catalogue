@@ -37,7 +37,3 @@ $catalogue_isAdmin = icms_userIsAdmin(CATALOGUE_DIRNAME);
 
 // Creating the module config array to make it available throughout the module
 $catalogueConfig = icms_getModuleConfig(CATALOGUE_DIRNAME);
-
-// creating the icmsPersistableRegistry to make it available throughout the module
-global $icmsPersistableRegistry;
-$icmsPersistableRegistry = IcmsPersistableRegistry::getInstance();

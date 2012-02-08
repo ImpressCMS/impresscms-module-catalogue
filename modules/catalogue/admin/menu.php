@@ -50,9 +50,9 @@ if (isset($catalogueModule)) {
 
 	$i++;
 	$headermenu[$i]['title'] = _MI_CATALOGUE_MANUAL;
-	$headermenu[$i]['link'] = ICMS_URL . '/modules/catalogue/manual/catalogue_manual.pdf';
+	$headermenu[$i]['link'] = ICMS_URL . '/modules/' . $catalogueModule->getVar('dirname') . '/manual/catalogue_manual.pdf';
 
 	$i++;
 	$headermenu[$i]['title'] = _MODABOUT_ABOUT;
-	$headermenu[$i]['link'] = ICMS_URL . '/modules/catalogue/admin/about.php';
+	$headermenu[$i]['link'] = ICMS_URL . '/modules/' . $catalogueModule->getVar('dirname') . '/admin/about.php';
 }

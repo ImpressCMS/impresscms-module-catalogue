@@ -15,7 +15,8 @@ include_once 'header.php';
 $xoopsOption['template_main'] = 'catalogue_item.html';
 include_once ICMS_ROOT_PATH . '/header.php';
 
-global $catalogueConfig;
+global $icmsConfig;
+
 $catalogue_item_handler = icms_getModuleHandler('item');
 
 $sprocketsModule = icms_getModuleInfo('sprockets');
@@ -25,7 +26,7 @@ $clean_item_id = isset($_GET['item_id']) ? intval($_GET['item_id']) : 0 ;
 $itemObj = $catalogue_item_handler->get($clean_item_id);
 
 // check if single item is set online, if not, torch it
-if ($itemObj->getVar('online_status', 'e') == false) {
+if ($itemObj->getVar('online_status', 'e') == FALSE) {
 	unset($itemObj);
 }
 
@@ -41,28 +42,31 @@ if($itemObj && !$itemObj->isNew()) {
 	//////////////////// DISPLAY SINGLE ITEM // ////////////////////
 	////////////////////////////////////////////////////////////////
 	
-	// update hits counter
-	$catalogue_item_handler->updateCounter($itemObj);
+	// Update hit counter
+	if (!icms_userIsAdmin(icms::$module->getVar('dirname')))
+	{
+		$catalogue_item_handler->updateCounter($itemObj);
+	}
 	
 	// display single item
 	$catalogue_item = $itemObj->toArray();
 	$catalogue_item['image'] = $document_root . 'uploads/' . $directory_name . '/item/'
 				. $itemObj->getVar('image', 'e');
-	$catalogue_item['image_width'] = $catalogueConfig['image_width'];
-	$catalogue_item['image_height'] = $catalogueConfig['image_height'];
-	if ($catalogueConfig['show_prices'] == 0) {
+	$catalogue_item['image_width'] = icms::$module->config['image_width'];
+	$catalogue_item['image_height'] = icms::$module->config['image_height'];
+	if (icms::$module->config['show_prices'] == 0) {
 		unset($catalogue_item['price']);
 	}
-	$icmsTpl->assign('catalogue_base_currency', $catalogueConfig['base_currency']);
-	$icmsTpl->assign('catalogue_item', $catalogue_item);
-	if ($catalogueConfig['view_cart']) {
-		$icmsTpl->assign('catalogue_view_cart', $catalogueConfig['view_cart']);
+	$icmsTpl->assign('catalogue_base_currency', icms::$module->config['base_currency']);
+	$icmsTpl->assign('catalogue_single_item', $catalogue_item);
+	if (icms::$module->config['view_cart']) {
+		$icmsTpl->assign('catalogue_view_cart', icms::$module->config['view_cart']);
 	}
-	$icmsTpl->assign('catalogue_index_view', false);
+	$icmsTpl->assign('catalogue_single_view', TRUE);
 	
 	// comments
-	if ($catalogueConfig['com_rule']) {
-		$icmsTpl->assign('catalogue_item_comment', true);
+	if (icms::$module->config['com_rule']) {
+		$icmsTpl->assign('catalogue_item_comment', TRUE);
 		include_once ICMS_ROOT_PATH . '/include/comment_view.php';
 	}
 
@@ -87,7 +91,7 @@ if($itemObj && !$itemObj->isNew()) {
 	$itemObjects = $catalogue_items = array();
 	
 	// Prepare a tag select box if sprockets module is installed & set in module preferences
-	if ($sprocketsModule) {
+	if (icms_get_module_status("sprockets")) {
 
 		// initialise
 		$form = '';
@@ -98,7 +102,7 @@ if($itemObj && !$itemObj->isNew()) {
 			$sprocketsModule->getVar('dirname'), 'sprockets');
 
 		// prepare buffers to reduce queries
-		$tag_buffer = $sprockets_tag_handler->getObjects(null, true, true);
+		$tag_buffer = $sprockets_tag_handler->getObjects(null, TRUE, TRUE);
 
 		// append the tag to the News title and link RSS to tag-specific feed
 		if (array_key_exists($clean_tag_id, $tag_buffer) && ($clean_tag_id !== 0)) {
@@ -107,18 +111,18 @@ if($itemObj && !$itemObj->isNew()) {
 		} else {
 			$icmsTpl->assign('catalogue_tag_name', _CO_CATALOGUE_ITEM_ALL_ITEMS);
 		}
-		if ($catalogueConfig['show_tag_select_box'] == true) {
+		if (icms::$module->config['show_tag_select_box'] == TRUE) {
 			// prepare a tag navigation select box
 			$tag_select_box = $sprockets_tag_handler->getTagSelectBox('item.php', $clean_tag_id,
-				_CO_CATALOGUE_ITEM_SELECT_ITEMS, true);
+				_CO_CATALOGUE_ITEM_SELECT_ITEMS, TRUE, icms::$module->getVar('mid'));
 			$icmsTpl->assign('catalogue_tag_select_box', $tag_select_box);
-			$icmsTpl->assign('catalogue_show_tag_select_box', true);
+			$icmsTpl->assign('catalogue_show_tag_select_box', TRUE);
 		}
 	}
 
 	// RSS feed including autodiscovery link, which is inserted in the module header
 	global $xoTheme;
-	if ($sprocketsModule && $clean_tag_id) {
+	if (icms_get_module_status("sprockets") && $clean_tag_id) {
 		$icmsTpl->assign('catalogue_rss_link', 'rss.php?tag_id=' . $clean_tag_id);
 		$icmsTpl->assign('catalogue_rss_title', _CO_CATALOGUE_SUBSCRIBE_RSS_ON
 				. $tag_buffer[$clean_tag_id]->title());
@@ -137,7 +141,7 @@ if($itemObj && !$itemObj->isNew()) {
 	// list of articles, filtered by tags (if any), pagination and preferences
 	$itemObjects = array();
 
-	if ($clean_tag_id && $sprocketsModule) {
+	if ($clean_tag_id && icms_get_module_status("sprockets")) {
 
 		/**
 		 * Retrieve a list of items JOINED to taglinks by item_id/tag_id/module_id/item
@@ -182,7 +186,7 @@ if($itemObj && !$itemObj->isNew()) {
 				. " AND `mid` = '" . $catalogueModule->getVar('mid') . "'"
 				. " AND `item` = 'item'"
 				. " ORDER BY `weight` ASC"
-				. " LIMIT " . $clean_start . ", " . $catalogueConfig['number_items_per_page'];
+				. " LIMIT " . $clean_start . ", " . icms::$module->config['number_items_per_page'];
 
 		$result = $xoopsDB->query($query);
 
@@ -201,18 +205,17 @@ if($itemObj && !$itemObj->isNew()) {
 	} else {
 
 		$criteria = new icms_db_criteria_Compo();
-		$criteria->add(new icms_db_criteria_Item('online_status', true));
+		$criteria->add(new icms_db_criteria_Item('online_status', TRUE));
 
 		// grab the total item count first
 		$item_count = $catalogue_item_handler->getCount($criteria);
 
 		$criteria->setStart($clean_start);
-		$criteria->setLimit($catalogueConfig['number_items_per_page']);
+		$criteria->setLimit(icms::$module->config['number_items_per_page']);
 		$criteria->setSort('weight');
 		$criteria->setOrder('ASC');
-		$number_items_per_row = $catalogueConfig['number_items_per_row'];
-		$itemObjects = $catalogue_item_handler->getObjects($criteria, true, true);
-
+		$number_items_per_row = icms::$module->config['number_items_per_row'];
+		$itemObjects = $catalogue_item_handler->getObjects($criteria, TRUE, TRUE);
 	}
 
 	unset($criteria);
@@ -221,32 +224,31 @@ if($itemObj && !$itemObj->isNew()) {
 		$item = $itemObj->toArray();
 		$item['image'] = $document_root . 'uploads/' . $directory_name . '/item/'
 				. $itemObj->getVar('image', 'e');
-		$item['number_items_per_row'] = $catalogueConfig['number_items_per_row'];
-		$item['thumbnail_width'] = $catalogueConfig['thumbnail_width'];
-		$item['thumbnail_height'] = $catalogueConfig['thumbnail_height'];
-		if ($catalogueConfig['show_prices'] == 0) {
+		$item['number_items_per_row'] = icms::$module->config['number_items_per_row'];
+		$item['thumbnail_width'] = icms::$module->config['thumbnail_width'];
+		$item['thumbnail_height'] = icms::$module->config['thumbnail_height'];
+		if (icms::$module->config['show_prices'] == 0) {
 			unset($item['price']);
 		}
 		$catalogue_items[] = $item;
 	}
 
 	// split the catalogue items into a multi-dimensional array with each element representing a row
-	$catalogue_item_rows = array_chunk($catalogue_items, $catalogueConfig['number_items_per_row']);
+	$catalogue_item_rows = array_chunk($catalogue_items, icms::$module->config['number_items_per_row']);
 
 	// prepare margins according to module preferences
-	$catalogue_row_margins = 'style="margin:' . $catalogueConfig['thumbnail_margin_top'] . 'px '
-		. '0px ' . $catalogueConfig['thumbnail_margin_bottom'] . 'px 0px;"';
-	$catalogue_item_margins = 'align="center" style="display:inline-block; margin: 0px ' . $catalogueConfig['thumbnail_margin_right']
-		. 'px 0px ' . $catalogueConfig['thumbnail_margin_left'] . 'px;"';
+	$catalogue_row_margins = 'style="margin:' . icms::$module->config['thumbnail_margin_top'] . 'px '
+		. '0px ' . icms::$module->config['thumbnail_margin_bottom'] . 'px 0px;"';
+	$catalogue_item_margins = 'align="center" style="display:inline-block; margin: 0px ' . icms::$module->config['thumbnail_margin_right']
+		. 'px 0px ' . icms::$module->config['thumbnail_margin_left'] . 'px;"';
 
 	// pagination
-	include_once ICMS_ROOT_PATH . '/class/pagenav.php';
 	if (!empty($clean_tag_id)) {
 		$extra_arg = 'tag_id=' . $clean_tag_id;
 	} else {
-		$extra_arg = false;
+		$extra_arg = FALSE;
 	}
-	$pagenav = new icms_view_PageNav($item_count, $catalogueConfig['number_items_per_page'],
+	$pagenav = new icms_view_PageNav($item_count, icms::$module->config['number_items_per_page'],
 			$clean_start, 'start', $extra_arg);
 
 	// assign to template
@@ -254,12 +256,12 @@ if($itemObj && !$itemObj->isNew()) {
 	$icmsTpl->assign('catalogue_item_rows', $catalogue_item_rows);
 	$icmsTpl->assign('catalogue_row_margins', $catalogue_row_margins);
 	$icmsTpl->assign('catalogue_item_margins', $catalogue_item_margins);
-	$icmsTpl->assign('catalogue_base_currency', $catalogueConfig['base_currency']);
+	$icmsTpl->assign('catalogue_base_currency', icms::$module->config['base_currency']);
 	$icmsTpl->assign('catalogue_navbar', $pagenav->renderNav());
-	$icmsTpl->assign('catalogue_index_view', true);
+	$icmsTpl->assign('catalogue_index_view', TRUE);
 }
 
-$icmsTpl->assign('catalogue_show_breadcrumb', $catalogueConfig['show_breadcrumb']);
-$icmsTpl->assign('catalogue_module_home', catalogue_getModuleName(true, true));
+$icmsTpl->assign('catalogue_show_breadcrumb', icms::$module->config['show_breadcrumb']);
+$icmsTpl->assign('catalogue_module_home', catalogue_getModuleName(TRUE, TRUE));
 
 include_once 'footer.php';

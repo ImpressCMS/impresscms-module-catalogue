@@ -18,10 +18,8 @@ if (!defined("ICMS_ROOT_PATH")) die("ICMS root path not defined");
  * @param object $itemObj
  * @return array 
  */
-function prepareItemForDisplay($itemObj, $with_overrides = true) {
+function prepareItemForDisplay($itemObj, $with_overrides = TRUE) {
 
-	global $catalogueConfig;	
-	
 	$itemArray = array();
 	
 	if ($with_overrides) {
@@ -43,10 +41,7 @@ function prepareItemForDisplay($itemObj, $with_overrides = true) {
  */
 
 function catalogue_getModuleAdminLink($moduleName='catalogue') {
-	global $icmsModule;
-	if (!$moduleName && (isset ($icmsModule) && is_object($icmsModule))) {
-		$moduleName = $icmsModule->getVar('dirname');
-	}
+	$moduleName = icms::$module->getVar('dirname');
 	$ret = '';
 	if ($moduleName) {
 		$ret = "<a href='" . ICMS_URL . "/modules/$moduleName/admin/index.php'>" ._MD_CATALOGUE_ADMIN_PAGE . "</a>";
@@ -57,22 +52,17 @@ function catalogue_getModuleAdminLink($moduleName='catalogue') {
 /**
  * @todo to be move in icms core
  */
-function catalogue_getModuleName($withLink = true, $forBreadCrumb = false, $moduleName = false) {
-	if (!$moduleName) {
-		global $icmsModule;
-		$moduleName = $icmsModule->getVar('dirname');
-	}
-	$icmsModule = icms_getModuleInfo($moduleName);
-	$icmsModuleConfig = icms_getModuleConfig($moduleName);
-	if (!isset ($icmsModule)) {
+function catalogue_getModuleName($withLink = TRUE, $forBreadCrumb = FALSE, $moduleName = FALSE) {
+	
+	if (!icms_get_module_status("catalogue")) {
 		return '';
 	}
 
 	if (!$withLink) {
-		return $icmsModule->getVar('name');
+		return icms::$module->getVar('name');
 	} else {
-		$ret = ICMS_URL . '/modules/' . $moduleName . '/';
-		return '<a href="' . $ret . '">' . $icmsModule->getVar('name') . '</a>';
+		$ret = ICMS_URL . '/modules/' . icms::$module->getVar('dirname') . '/';
+		return '<a href="' . $ret . '">' . icms::$module->getVar('name') . '</a>';
 	}
 }
 
@@ -84,7 +74,7 @@ function catalogue_getModuleName($withLink = true, $forBreadCrumb = false, $modu
  * @param string $default default page if previous page is not found
  * @return string previous page URL
  */
-function catalogue_getPreviousPage($default=false) {
+function catalogue_getPreviousPage($default=FALSE) {
 	global $impresscms;
 	if (isset($impresscms->urls['previouspage'])) {
 		return $impresscms->urls['previouspage'];
@@ -113,12 +103,12 @@ function catalogue_getMonthNameById($month_id) {
 * @todo this function is fixing a ucwords bug in icms_getLinkedUnameFromId so we will update this in icms 1.2
 *
 * @param integer $userid uid of the related user
-* @param bool $name true to return the fullname, false to use the username; if true and the user does not have fullname, username will be used instead
+* @param bool $name TRUE to return the fullname, FALSE to use the username; if TRUE and the user does not have fullname, username will be used instead
 * @param array $users array already containing XoopsUser objects in which case we will save a query
-* @param bool $withContact true if we want contact details to be added in the value returned (PM and email links)
+* @param bool $withContact TRUE if we want contact details to be added in the value returned (PM and email links)
 * @return string name of user with a link on his profile
 */
-function catalogue_getLinkedUnameFromId($userid, $name = false, $users = array (), $withContact = false)
+function catalogue_getLinkedUnameFromId($userid, $name = FALSE, $users = array (), $withContact = FALSE)
 {
 	if(!is_numeric($userid)) {return $userid;}
 	$userid = intval($userid);
@@ -127,8 +117,7 @@ function catalogue_getLinkedUnameFromId($userid, $name = false, $users = array (
 		if($users == array())
 		{
 			//fetching users
-			$member_handler = & xoops_gethandler('member');
-			$user = & $member_handler->getUser($userid);
+			$user = icms::handler('member')->getUser($userid);
 		}
 		else
 		{
