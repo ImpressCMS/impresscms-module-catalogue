@@ -139,7 +139,7 @@ if (in_array($clean_op,$valid_op,TRUE)){
 				}
 
 				// prepare submitter for display
-				$user = catalogue_getLinkedUnameFromId($itemObj->getVar('submitter', 'e'));
+				$user = icms_member_user_Handler::getUserLink($itemObj->getVar('submitter', 'e'));
 				$itemObj->setVar('submitter', $user);
 				$itemObj->displaySingleObject();
 			}
