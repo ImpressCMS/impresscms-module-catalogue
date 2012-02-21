@@ -30,6 +30,12 @@ function catalogue_item_recent_show($options) {
 		$date = $value->getVar('date', 'e');
 		$value = $value->toArray();
 		$value['date'] = date('j/n/Y', $date);
+		
+		// Add SEO friendly string to URL
+		if (!empty($value['short_url']))
+		{
+			$value['itemUrl'] .= "&amp;title=" . $value['short_url'];
+		}
 	}
 	return $block;
 }

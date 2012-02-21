@@ -48,8 +48,15 @@ if($itemObj && !$itemObj->isNew()) {
 		$catalogue_item_handler->updateCounter($itemObj);
 	}
 	
-	// display single item
+	// Display single item
 	$catalogue_item = $itemObj->toArray();
+	
+	// Add SEO friendly string to URL
+	if (!empty($catalogue_item['short_url']))
+	{
+		$catalogue_item['itemUrl'] .= "&amp;title=" . $catalogue_item['short_url'];
+	}
+	
 	$catalogue_item['image'] = $document_root . 'uploads/' . $directory_name . '/item/'
 				. $itemObj->getVar('image', 'e');
 	$catalogue_item['image_width'] = icms::$module->config['image_width'];
@@ -222,6 +229,13 @@ if($itemObj && !$itemObj->isNew()) {
 	
 	foreach ($itemObjects as $itemObj) {
 		$item = $itemObj->toArray();
+		
+		// Add SEO friendly string to URL
+		if (!empty($item['short_url']))
+		{
+			$item['itemUrl'] .= "&amp;title=" . $item['short_url'];
+		}
+		
 		$item['image'] = $document_root . 'uploads/' . $directory_name . '/item/'
 				. $itemObj->getVar('image', 'e');
 		$item['number_items_per_row'] = icms::$module->config['number_items_per_row'];
