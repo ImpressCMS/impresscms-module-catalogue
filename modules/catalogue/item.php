@@ -51,6 +51,10 @@ if($itemObj && !$itemObj->isNew()) {
 	// Display single item
 	$catalogue_item = $itemObj->toArray();
 	
+	// Prepare generic RSS feed
+	$icmsTpl->assign('catalogue_rss_link', 'rss.php');
+	$icmsTpl->assign('catalogue_rss_title', _CO_CATALOGUE_SUBSCRIBE_RSS);
+	
 	// Add SEO friendly string to URL
 	if (!empty($catalogue_item['short_url']))
 	{

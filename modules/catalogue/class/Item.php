@@ -149,6 +149,25 @@ class CatalogueItem extends icms_ipf_seo_Object
 					<img src="../images/button_ok.png" alt="Online" /></a>';
 		}
 	}
+	
+		/**
+	 * Customise object itemLink to append the SEO-friendly string.
+	 */
+	public function getItemLinkWithSEOString()
+	{
+		$short_url = $this->short_url();
+		if (!empty($short_url))
+		{
+			$seo_url = '<a href="' . $this->getItemLink(TRUE) . '&amp;title=' . $this->short_url() 
+					. '">' . $this->getVar('title', 'e') . '</a>';
+		}
+		else
+		{
+			$seo_url = $this->getItemLink(FALSE);
+		}
+		
+		return $seo_url;
+	}
 
 	public function getWeightControl(){
 		$control = new icms_form_elements_Text('','weight[]',5,7,$this->getVar( 'weight', 'e'));

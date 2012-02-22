@@ -28,13 +28,14 @@ function catalogue_item_recent_show($options) {
 	$block['catalogue_items'] = $catalogue_item_handler->getObjects($criteria, TRUE, TRUE);
 	foreach ($block['catalogue_items'] as $key => &$value) {
 		$date = $value->getVar('date', 'e');
+		$itemLink = $value->getItemLinkWithSEOString();
 		$value = $value->toArray();
 		$value['date'] = date('j/n/Y', $date);
 		
 		// Add SEO friendly string to URL
 		if (!empty($value['short_url']))
 		{
-			$value['itemUrl'] .= "&amp;title=" . $value['short_url'];
+			$value['itemLink'] = $itemLink;
 		}
 	}
 	return $block;
