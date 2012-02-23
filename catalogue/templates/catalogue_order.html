@@ -1,0 +1,15 @@
+<{includeq file='db:catalogue_header.html'}>
+
+<{if $catalogue_order}>
+	<div>
+		<h1><{$catalogue_order.item_id}></h1>
+		<div><b><{$smarty.const._CO_CATALOGUE_ORDER_NUMBER_ORDERED}></b>: <{$catalogue_order.number_ordered}></div>
+
+	</div>
+<{/if}>
+<{if $catalogue_order_table}>
+	<h1><{$catalogue_title}></h1>
+	<{$catalogue_order_table}>
+<{/if}>
+
+<{includeq file='db:catalogue_footer.html'}>
