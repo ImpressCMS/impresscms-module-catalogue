@@ -12,5 +12,5 @@
 * @version		$Id$
 */
 
-header('location: item.php');
+include 'item.php';
 exit;
