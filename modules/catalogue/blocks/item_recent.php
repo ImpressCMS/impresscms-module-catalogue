@@ -42,7 +42,7 @@ function catalogue_item_recent_edit($options) {
 	$catalogue_item_handler = icms_getModuleHandler('item',
 		basename(dirname(dirname(__FILE__))), 'catalogue');
 
-	// select number of recent soundtracks to display in the block
+	// Select number of recent items to display in the block
 	$form = '<table><tr>';
 	$form .= '<tr><td>' . _MB_CATALOGUE_ITEM_RECENT_LIMIT . '</td>';
 	$form .= '<td>' . '<input type="text" name="options[]" value="' . $options[0] . '"/></td>';

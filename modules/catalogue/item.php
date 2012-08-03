@@ -114,12 +114,12 @@ if($itemObj && !$itemObj->isNew()) {
 
 		// prepare buffers to reduce queries
 		$criteria = icms_buildCriteria(array('label_type' => '0'));
-		$tag_buffer = $sprockets_tag_handler->getObjects($criteria, TRUE, TRUE);
+		$tag_buffer = $sprockets_tag_handler->getList($criteria, TRUE, TRUE);
 
 		// append the tag to the News title and link RSS to tag-specific feed
 		if (array_key_exists($clean_tag_id, $tag_buffer) && ($clean_tag_id !== 0)) {
-			$icmsTpl->assign('catalogue_tag_name', $tag_buffer[$clean_tag_id]->title());
-			$icmsTpl->assign('catalogue_category_path', $tag_buffer[$clean_tag_id]->title());
+			$icmsTpl->assign('catalogue_tag_name', $tag_buffer[$clean_tag_id]);
+			$icmsTpl->assign('catalogue_category_path', $tag_buffer[$clean_tag_id]);
 		} else {
 			$icmsTpl->assign('catalogue_tag_name', _CO_CATALOGUE_ITEM_ALL_ITEMS);
 		}
@@ -137,9 +137,9 @@ if($itemObj && !$itemObj->isNew()) {
 	if (icms_get_module_status("sprockets") && $clean_tag_id) {
 		$icmsTpl->assign('catalogue_rss_link', 'rss.php?tag_id=' . $clean_tag_id);
 		$icmsTpl->assign('catalogue_rss_title', _CO_CATALOGUE_SUBSCRIBE_RSS_ON
-				. $tag_buffer[$clean_tag_id]->title());
+				. $tag_buffer[$clean_tag_id]);
 		$rss_attributes = array('type' => 'application/rss+xml',
-			'title' => $icmsConfig['sitename'] . ' - ' . $tag_buffer[$clean_tag_id]->title());
+			'title' => $icmsConfig['sitename'] . ' - ' . $tag_buffer[$clean_tag_id]);
 		$rss_link = CATALOGUE_URL . 'rss.php?tag_id=' . $clean_tag_id;
 	} else {
 			$icmsTpl->assign('catalogue_rss_link', 'rss.php');
