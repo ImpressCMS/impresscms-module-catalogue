@@ -87,7 +87,7 @@ class CatalogueItem extends icms_ipf_seo_Object
 	 */
 	function getVar($key, $format = 's') {
 		if ($format == 's' && in_array($key, array ('online_status'))) {
-				return call_user_func(array ($this,     $key));
+				return call_user_func(array ($this, $key));
 		}
 		return parent :: getVar($key, $format);
 	}

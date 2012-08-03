@@ -13,25 +13,6 @@
 if (!defined("ICMS_ROOT_PATH")) die("ICMS root path not defined");
 
 /**
- * Formats items for user-side display, prepares them for insertion to templates
- * 
- * @param object $itemObj
- * @return array 
- */
-function prepareItemForDisplay($itemObj, $with_overrides = TRUE) {
-
-	$itemArray = array();
-	
-	if ($with_overrides) {
-		$itemArray = $itemObj->toArray();
-	} else {
-		$itemArray = $itemObj->toArrayWithoutOverrides();
-	}
-	
-	return $itemArray;
-}
-
-/**
  * Get module admion link
  *
  * @todo to be move in icms core

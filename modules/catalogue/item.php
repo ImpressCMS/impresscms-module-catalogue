@@ -113,7 +113,8 @@ if($itemObj && !$itemObj->isNew()) {
 			$sprocketsModule->getVar('dirname'), 'sprockets');
 
 		// prepare buffers to reduce queries
-		$tag_buffer = $sprockets_tag_handler->getObjects(null, TRUE, TRUE);
+		$criteria = icms_buildCriteria(array('label_type' => '0'));
+		$tag_buffer = $sprockets_tag_handler->getObjects($criteria, TRUE, TRUE);
 
 		// append the tag to the News title and link RSS to tag-specific feed
 		if (array_key_exists($clean_tag_id, $tag_buffer) && ($clean_tag_id !== 0)) {

@@ -17,6 +17,8 @@ if (!defined("ICMS_ROOT_PATH")) die("ICMS root path not defined");
 function catalogue_item_recent_show($options) {
 	include_once(ICMS_ROOT_PATH . '/modules/' . basename(dirname(dirname(__FILE__)))
 		. '/include/common.php');
+	
+	$block['catalogue_items'] = $itemObjects = array();
 	$catalogue_item_handler = icms_getModuleHandler('item',
 		basename(dirname(dirname(__FILE__))), 'catalogue');
 	$criteria = new icms_db_criteria_Compo();
@@ -25,18 +27,11 @@ function catalogue_item_recent_show($options) {
 	$criteria->setLimit($options[0]);
 	$criteria->setSort('date');
 	$criteria->setOrder('DESC');
-	$block['catalogue_items'] = $catalogue_item_handler->getObjects($criteria, TRUE, TRUE);
-	foreach ($block['catalogue_items'] as $key => &$value) {
-		$date = $value->getVar('date', 'e');
-		$itemLink = $value->getItemLinkWithSEOString();
-		$value = $value->toArray();
-		$value['date'] = date('j/n/Y', $date);
-		
-		// Add SEO friendly string to URL
-		if (!empty($value['short_url']))
-		{
-			$value['itemLink'] = $itemLink;
-		}
+	$itemObjects = $catalogue_item_handler->getObjects($criteria, TRUE, TRUE);
+	foreach ($itemObjects as $key => $value) {
+		$item['date'] = date('j/n/Y', $value->getVar('date', 'e'));
+		$item['itemLink'] = $value->getItemLinkWithSEOString();
+		$block['catalogue_items'][] = $item;
 	}
 	return $block;
 }
