@@ -92,46 +92,6 @@ class CatalogueItem extends icms_ipf_seo_Object
 		return parent :: getVar($key, $format);
 	}
 
-			/**
-	 * Duplicates the functionality of toArray() but does not execute getVar() overrides that require DB calls
-	 * 
-	 * Use this function when parsing multiple articles for display. If a getVar() override executes 
-	 * a DB query (for example, to lookup a value in another table) then parsing multiple articles 
-	 * will trigger that query multiple times. If you are doing this for a multiple fields and a 
-	 * large number of articles, this can result in a huge number of queries. It is more efficient
-	 * then to build a reference buffer for each such field and then do the lookups in memory 
-	 * instead. However, you need to create a reference buffer for each value where you want to 
-	 * avoid a DB lookup and manually assign the value in your code
-	 *
-	 * @return array
-	 */
-	public function toArrayWithoutOverrides()
-	{
-		$vars = $this->getVars();
-		$do_not_override = array(0 => 'tag');
-		$ret = array();
-
-		foreach ($vars as $key => $var) {
-			if (in_array($key, $do_not_override)) {
-					$value = $this->getVar($key, 'e');
-			} else {
-					$value = $this->getVar($key);
-			}
-			$ret[$key] = $value;
-	}
-
-		if ($this->handler->identifierName != "") {
-			$controller = new icms_ipf_Controller($this->handler);
-			$ret['itemLink'] = $controller->getItemLink($this);
-			$ret['itemUrl'] = $controller->getItemLink($this, TRUE);
-			$ret['editItemLink'] = $controller->getEditItemLink($this, FALSE, TRUE);
-			$ret['deleteItemLink'] = $controller->getDeleteItemLink($this, FALSE, TRUE);
-			$ret['printAndMailLink'] = $controller->getPrintAndMailLink($this);
-		}
-
-		return $ret;
-	}
-
 	/**
 	 * Converts online_status to human readable
 	 * 
