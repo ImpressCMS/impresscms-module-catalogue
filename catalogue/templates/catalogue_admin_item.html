@@ -1,0 +1,14 @@
+<{if $catalogue_item_title}>
+	<h1><{$catalogue_item_title}></h1>
+<{/if}>
+<{if $catalogue_item_info}>
+	<p><{$catalogue_item_info}></p>
+<{/if}>
+
+<{if $catalogue_item_table}>
+	<{$catalogue_item_table}>
+<{/if}>
+
+<{if $additem}>
+	<{includeq file='db:system_common_form.html' form=$additem}>
+<{/if}>
