@@ -12,7 +12,7 @@
 
 if (!defined("ICMS_ROOT_PATH")) die("ICMS root path not defined");
 
-function catalogue_search($queryarray, $andor, $offset = 0, $userid = 0)
+function catalogue_search($queryarray, $andor, $limit, $offset = 0, $userid = 0)
 {
 	global $icmsConfigSearch;
 	
