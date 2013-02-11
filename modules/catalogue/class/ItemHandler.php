@@ -101,7 +101,7 @@ class CatalogueItemHandler extends icms_ipf_Handler {
 		// This approach is not ideal, but it greatly reduces the load for queries with large result sets
 		$results = array_pad($results, $count, 1);
 		
-		return $this->getObjects($criteria, TRUE, FALSE);
+		return $results;
 	}
 	
 	/**
