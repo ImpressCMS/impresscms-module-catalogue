@@ -17,3 +17,7 @@ Version 1.13
 ============
 - Minor compatibility upgrade to work with Sprockets 2.0.
 - Catalogue is no longer compatible with Sprockets 1.x from this version onwards.
+
+Version 1.14 BETA
+=================
+- Improve efficiency of search function.
