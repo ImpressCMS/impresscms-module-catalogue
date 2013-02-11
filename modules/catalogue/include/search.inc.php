@@ -1,8 +1,6 @@
 <?php
 /**
-* Catalogue version infomation
-*
-* This file holds the search function for the Catalogue module
+* Search function for the Catalogue module
 *
 * @copyright	Copyright Madfish (Simon Wilkinson)
 * @license		http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU General Public License (GPL)
@@ -14,7 +12,7 @@
 
 if (!defined("ICMS_ROOT_PATH")) die("ICMS root path not defined");
 
-function catalogue_search($queryarray, $andor, $offset = 0, $userid)
+function catalogue_search($queryarray, $andor, $offset = 0, $userid = 0)
 {
 	global $icmsConfigSearch;
 	
