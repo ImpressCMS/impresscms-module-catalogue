@@ -2,7 +2,7 @@
 /**
 * Catalogue version infomation
 *
-* This file holds the configuration information of this module
+* This file holds the search function for the Catalogue module
 *
 * @copyright	Copyright Madfish (Simon Wilkinson)
 * @license		http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU General Public License (GPL)
@@ -29,7 +29,7 @@ function catalogue_search($queryarray, $andor, $offset = 0, $userid)
 	// Count the number of records
 	$count = count($itemsArray);
 	
-	// The number of records actually containing publication objects is <= $limit, the rest are padding
+	// The number of records actually containing item objects is <= $limit, the rest are padding
 	$items_left = ($count - ($offset + $icmsConfigSearch['search_per_page']));
 	if ($items_left < 0) {
 		$number_to_process = $icmsConfigSearch['search_per_page'] + $items_left; // $items_left is negative
@@ -37,13 +37,13 @@ function catalogue_search($queryarray, $andor, $offset = 0, $userid)
 		$number_to_process = $icmsConfigSearch['search_per_page'];
 	}
 	
-	// Process the actual articles (not the padding)
-	foreach ($itemsArray as $itemArray) {
+	// Process the actual items (not the padding)
+	for ($i = 0; $i < $number_to_process; $i++) {
 		$item['image'] = "images/icon_small.png";
-		$item['link'] = $itemArray['itemUrl'];
-		$item['title'] = $itemArray['title'];
-		$item['time'] = strtotime($itemArray['date']);
-		$item['uid'] = $itemArray['submitter'];
+		$item['link'] = $itemsArray[$i]->getItemLink(TRUE);
+		$item['title'] = $itemsArray[$i]->getVar('title');
+		$item['time'] = strtotime($itemsArray[$i]->getVar('date', 'e'));
+		$item['uid'] = $itemsArray[$i]->getVar('submitter', 'e');
 		$ret[] = $item;
 		unset($item);
 	}
