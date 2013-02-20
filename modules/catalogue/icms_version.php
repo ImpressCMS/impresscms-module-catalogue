@@ -33,8 +33,8 @@ $modversion = array(
 
 /**  Development information */
   'status_version'=> "1.14",
-  'status'=> "Beta",
-  'date'=> "11/2/2013",
+  'status'=> "Final",
+  'date'=> "20/2/2013",
   'author_word'=> "Live long and prosper.",
 
 /** Contributors */
