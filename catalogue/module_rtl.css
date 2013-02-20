@@ -1,0 +1,52 @@
+/**
+* Specific CSS for the module
+*
+* @copyright	http://smartfactory.ca The SmartFactory
+* @license		http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GNU General Public License (GPL)
+* @since		1.0
+* @author		marcan aka Marc-André Lanciault <marcan@smartfactory.ca>
+* @version		$Id$
+*/
+
+.catalogue_headertable {padding: 0; margin: 0; border-bottom: 1px solid; margin-bottom: 10px;}
+.catalogue_modulename {font-size: 0.8em; text-align: left; font-weight: bold; padding-right: 0.3em;	line-height: 18px;}
+.catalogue_breadcrumb {font-size: 0.8em; line-height: 18px;}
+.catalogue_adminlinks {padding-top: 15px; padding-bottom: 5px; font-size: 0.8em; text-align: center; line-height: 18px;}
+
+/* used to vertically space elements to neaten up the display */
+.catalogue_separator{margin-bottom:1em;}
+
+.catalogue_item_container {
+	text-align:center;
+	margin-bottom: 10px;
+}
+
+/* used to position product images in single item view */
+.catalogue_float_left {
+	float:left;
+	margin:0px 1em 0px 0px;
+}
+.catalogue_float_right {
+	float:right;
+	margin:0px 0px 0px 1em;
+}
+
+
+#catalogue_post_comments_container {}
+.catalogue_post_comments {
+	background-image: url(images/comments.gif);
+	background-repeat: no-repeat;
+	margin:5px 0 0 0;
+	padding-left: 15px;
+	font-size: 80%;
+	float: left;
+}
+
+.catalogue_admin_links {
+	margin:5px 0 0 0;
+}
+
+#catalogue_rss {
+	text-align: center;
+	padding-top: 10px;
+}
