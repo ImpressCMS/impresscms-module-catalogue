@@ -37,23 +37,27 @@ function catalogue_search($queryarray, $andor, $limit, $offset = 0, $userid = 0)
 	
 	// Process the actual items (not the padding)
 	for ($i = 0; $i < $number_to_process; $i++) {
-		$item['image'] = "images/icon_small.png";
-		$item['link'] = $itemsArray[$i]->getItemLink(TRUE);
-		$item['title'] = $itemsArray[$i]->getVar('title');
-		$item['time'] = strtotime($itemsArray[$i]->getVar('date', 'e'));
-		$item['uid'] = $itemsArray[$i]->getVar('submitter', 'e');
-		$ret[] = $item;
-		unset($item);
+			if (is_object($itemsArray[$i])) { // Required to prevent crashing on profile view
+			$item['image'] = "images/icon_small.png";
+			$item['link'] = $itemsArray[$i]->getItemLink(TRUE);
+			$item['title'] = $itemsArray[$i]->getVar('title');
+			$item['time'] = $itemsArray[$i]->getVar('date', 'e');
+			$item['uid'] = $itemsArray[$i]->getVar('submitter', 'e');
+			$ret[] = $item;
+			unset($item);
+		}
 	}
 	
-	// Restore the padding (required for 'hits' information and pagination controls). The offset
-	// must be padded to the left of the results, and the remainder to the right or else the search
-	// pagination controls will display the wrong results (which will all be empty).
-	// Left padding = -($limit + $offset)
-	$ret = array_pad($ret, -($offset + $number_to_process), 1);
-	
-	// Right padding = $count
-	$ret = array_pad($ret, $count, 1);
+	if ($limit == 0) {
+		// Restore the padding (required for 'hits' information and pagination controls). The offset
+		// must be padded to the left of the results, and the remainder to the right or else the search
+		// pagination controls will display the wrong results (which will all be empty).
+		// Left padding = -($limit + $offset)
+		$ret = array_pad($ret, -($offset + $number_to_process), 1);
+
+		// Right padding = $count
+		$ret = array_pad($ret, $count, 1);
+	}
 	
 	return $ret;
 }

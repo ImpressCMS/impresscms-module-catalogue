@@ -21,3 +21,5 @@ Version 1.13
 Version 1.14 (20/2/2013)
 ========================
 - Improve efficiency of search function.
+- Fix bug in search function that was crashing profile views.
+- Fix non-displaying date on search results .

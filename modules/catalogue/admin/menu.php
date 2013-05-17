@@ -23,7 +23,7 @@ $adminmenu[$i]['link'] = 'admin/item.php';
 //$adminmenu[$i]['title'] = _MI_CATALOGUE_ORDERS;
 //$adminmenu[$i]['link'] = 'admin/order.php';
 
-$catalogueModule = icms_getModuleInfo(basename(dirname(dirname(__FILE__))));
+$catalogueModule = icms_getModuleInfo('catalogue');
 
 if (isset($catalogueModule)) {
 
