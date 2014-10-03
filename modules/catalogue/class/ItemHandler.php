@@ -22,12 +22,11 @@ class CatalogueItemHandler extends icms_ipf_Handler {
 			'catalogue');
 
 		// enable upload of product photos, this should be handled by core mimetype manager later
-		global $catalogueConfig;
 		$mimetypes = array('image/jpeg', 'image/png', 'image/gif');
 		$this->enableUpload($mimetypes,
-			$catalogueConfig['image_file_size'],
-			$catalogueConfig['image_upload_width'],
-			$catalogueConfig['image_upload_height']);
+			icms_getConfig('image_file_size', 'catalogue'),
+			icms_getConfig('image_upload_width', 'catalogue'),
+			icms_getConfig('image_upload_height', 'catalogue'));
 	}
 	
 	/** Provides global search functionality for Catalogue module
