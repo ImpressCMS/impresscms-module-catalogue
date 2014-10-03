@@ -34,6 +34,7 @@ class CatalogueItem extends icms_ipf_seo_Object
 		$this->quickInitVar('price', XOBJ_DTYPE_CURRENCY, TRUE, FALSE, FALSE, 0);
 		$this->quickInitVar('shipping', XOBJ_DTYPE_CURRENCY, TRUE, FALSE, FALSE, 0);
 		$this->quickInitVar('ecommerce_link', XOBJ_DTYPE_TXTAREA, FALSE);
+		$this->quickInitVar('type', XOBJ_DTYPE_TXTBOX, TRUE, FALSE, FALSE, 'Image');
 		$this->quickInitVar('submitter', XOBJ_DTYPE_INT, TRUE);
 		$this->quickInitVar('date', XOBJ_DTYPE_LTIME, TRUE);
 		$this->quickInitVar('online_status', XOBJ_DTYPE_INT, TRUE, FALSE, FALSE, 1);

@@ -26,3 +26,4 @@ Version 1.14 (20/2/2013)
 
 Version 1.15 (unreleased)
 =========================
+Add a static 'type' field identifying items as "Image" resources.
