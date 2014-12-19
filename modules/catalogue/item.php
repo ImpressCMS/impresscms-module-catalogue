@@ -159,7 +159,6 @@ if($itemObj && !$itemObj->isNew()) {
 		 * Retrieve a list of items JOINED to taglinks by item_id/tag_id/module_id/item
 		 */
 
-		global $xoopsDB;
 		$query = $rows = $tag_item_count = '';
 		$linked_item_ids = array();
 		$catalogueModule = icms_getModuleInfo(basename(dirname(__FILE__)));
@@ -173,14 +172,14 @@ if($itemObj && !$itemObj->isNew()) {
 				. " AND `mid` = '" . $catalogueModule->getVar('mid') . "'"
 				. " AND `item` = 'item'";
 
-		$result = $xoopsDB->query($group_query);
+		$result = icms::$xoopsDB->query($group_query);
 
 		if (!$result) {
 			echo 'Error';
 			exit;
 
 		} else {
-			while ($row = $xoopsDB->fetchArray($result)) {
+			while ($row = icms::$xoopsDB->fetchArray($result)) {
 				foreach ($row as $key => $count) {
 					$item_count = $count;
 				}
@@ -200,7 +199,7 @@ if($itemObj && !$itemObj->isNew()) {
 				. " ORDER BY `weight` ASC"
 				. " LIMIT " . $clean_start . ", " . icms::$module->config['number_items_per_page'];
 
-		$result = $xoopsDB->query($query);
+		$result = icms::$xoopsDB->query($query);
 
 		if (!$result) {
 			echo 'Error';

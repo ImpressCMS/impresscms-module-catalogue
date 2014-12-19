@@ -98,8 +98,6 @@ if (empty($clean_tag_id) || !icms_get_module_status("sprockets")) {
 	
 	// retrieve items relevant to this tag using a JOIN to the taglinks table
 
-	global $xoopsDB;
-
 	$query = $rows = $tag_item_count = '';
 
 	$query = "SELECT * FROM " . $catalogue_item_handler->table . ", "
@@ -112,7 +110,7 @@ if (empty($clean_tag_id) || !icms_get_module_status("sprockets")) {
 			. " ORDER BY `date` DESC"
 			. " LIMIT " . $catalogueConfig['number_rss_items'];
 
-	$result = $xoopsDB->query($query);
+	$result = icms::$xoopsDB->query($query);
 
 	if (!$result) {
 		echo 'Error';
