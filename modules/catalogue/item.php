@@ -16,13 +16,17 @@ $xoopsOption['template_main'] = 'catalogue_item.html';
 include_once ICMS_ROOT_PATH . '/header.php';
 
 global $icmsConfig;
-
 $catalogue_item_handler = icms_getModuleHandler('item');
-
 $sprocketsModule = icms_getModuleInfo('sprockets');
 
-/** Use a naming convention that indicates the source of the content of the variable */
+// Sanitise input parameters
+$untagged_content = FALSE;
 $clean_item_id = isset($_GET['item_id']) ? intval($_GET['item_id']) : 0 ;
+if (isset($_GET['tag_id'])) {
+	if ($_GET['tag_id'] == 'untagged') {
+		$untagged_content = TRUE;
+	}
+}
 $itemObj = $catalogue_item_handler->get($clean_item_id);
 
 // check if single item is set online, if not, torch it
@@ -125,8 +129,13 @@ if($itemObj && !$itemObj->isNew()) {
 		}
 		if (icms::$module->config['show_tag_select_box'] == TRUE) {
 			// prepare a tag navigation select box
-			$tag_select_box = $sprockets_tag_handler->getTagSelectBox('item.php', $clean_tag_id,
-				_CO_CATALOGUE_ITEM_SELECT_ITEMS, TRUE, icms::$module->getVar('mid'));
+			if ($untagged_content) {
+				$tag_select_box = $sprockets_tag_handler->getTagSelectBox('item.php', 'untagged',
+				_CO_CATALOGUE_ITEM_SELECT_ITEMS, TRUE, icms::$module->getVar('mid'), 'item', TRUE);
+			} else {
+				$tag_select_box = $sprockets_tag_handler->getTagSelectBox('item.php', $clean_tag_id,
+				_CO_CATALOGUE_ITEM_SELECT_ITEMS, TRUE, icms::$module->getVar('mid'), 'item', TRUE);
+			}			
 			$icmsTpl->assign('catalogue_tag_select_box', $tag_select_box);
 			$icmsTpl->assign('catalogue_show_tag_select_box', TRUE);
 		}
@@ -153,7 +162,7 @@ if($itemObj && !$itemObj->isNew()) {
 	// list of articles, filtered by tags (if any), pagination and preferences
 	$itemObjects = array();
 
-	if ($clean_tag_id && icms_get_module_status("sprockets")) {
+	if (($clean_tag_id || $untagged_content) && icms_get_module_status("sprockets")) {
 
 		/**
 		 * Retrieve a list of items JOINED to taglinks by item_id/tag_id/module_id/item

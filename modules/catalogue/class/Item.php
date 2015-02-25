@@ -54,8 +54,10 @@ class CatalogueItem extends icms_ipf_seo_Object
 			'module' => 'sprockets'));
 		} else {
 			$this->hideFieldFromForm('tag');
-			$this->hideFieldFromSingleView ('tag');
+			$this->hideFieldFromSingleView('tag');
 		}
+		$this->hideFieldFromForm('type');
+		$this->hideFieldFromSingleView('type');
 
 		// Add WYSIWYG editor to description field
 		$this->setControl('description', 'dhtmltextarea');

@@ -13,3 +13,10 @@
 if (!defined("ICMS_ROOT_PATH")) die("ICMS root path not defined");
 
 define("_MB_CATALOGUE_ITEM_RECENT_LIMIT", "Number of new products to show");
+
+// New in V1.06
+define("_MB_CATALOGUE_ALL", "-- All --");
+define("_MB_CATALOGUE_TAG", "Filter contents by tag");
+define("_MB_CATALOGUE_DYNAMIC_TAG", "Dynamic tag filtering? (Overrides static tag filter).");
+define("_MB_CATALOGUE_PROJECT_YES", "Yes");
+define("_MB_CATALOGUE_PROJECT_NO", "No");

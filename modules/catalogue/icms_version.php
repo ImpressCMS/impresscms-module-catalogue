@@ -78,7 +78,7 @@ $modversion['blocks'][1] = array(
   'description' => _MI_CATALOGUE_ITEMRECENTDSC,
   'show_func' => 'catalogue_item_recent_show',
   'edit_func' => 'catalogue_item_recent_edit',
-  'options' => '5',
+  'options' => '5|0|0',
   'template' => 'catalogue_item_recent.html');
 
 /** Templates information */

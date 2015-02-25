@@ -20,9 +20,7 @@
 function edititem($item_id = 0)
 {
 	global $catalogue_item_handler, $icmsUser, $icmsAdminTpl;
-	
 	$catalogueModule = icms_getModuleInfo(basename(dirname(dirname(__FILE__))));
-
 	$itemObj = $catalogue_item_handler->get($item_id);
 
 	if (!$itemObj->isNew()){
@@ -45,18 +43,19 @@ include_once("admin_header.php");
 
 $clean_op = '';
 $catalogue_item_handler = icms_getModuleHandler('item');
-
-/** Create a whitelist of valid values, be sure to use appropriate types for each value
- * Be sure to include a value for no parameter, if you have a default condition
- */
 $valid_op = array ('mod','changedField','additem','del','view','visible', 'changeWeight', '');
 
+// Sanitise input paramters
+$clean_item_id = isset($_GET['item_id']) ? (int) $_GET['item_id'] : 0 ;
+$untagged_content = FALSE;
+if (isset($_GET['tag_id'])) {
+	if ($_GET['tag_id'] == 'untagged') {
+		$untagged_content = TRUE;
+	}
+}
+$clean_tag_id = isset($_GET['tag_id']) ? intval($_GET['tag_id']) : 0 ;
 if (isset($_GET['op'])) $clean_op = htmlentities($_GET['op']);
 if (isset($_POST['op'])) $clean_op = htmlentities($_POST['op']);
-
-/** Again, use a naming convention that indicates the source of the content of the variable */
-$clean_item_id = isset($_GET['item_id']) ? (int) $_GET['item_id'] : 0 ;
-$clean_tag_id = isset($_GET['tag_id']) ? intval($_GET['tag_id']) : 0 ;
 
 if (in_array($clean_op,$valid_op,TRUE)){
   switch ($clean_op) {
@@ -160,14 +159,19 @@ if (in_array($clean_op,$valid_op,TRUE)){
 					$sprocketsModule->getVar('dirname'), 'sprockets');
 			$catalogueModule = icms_getModuleInfo(basename(dirname(dirname(__FILE__))));
 			
-			$tag_select_box = $sprockets_tag_handler->getTagSelectBox('item.php', $clean_tag_id,
-				_AM_CATALOGUE_ITEM_ALL_ITEMS, TRUE, icms::$module->getVar('mid'));
+			if ($untagged_content) {
+				$tag_select_box = $sprockets_tag_handler->getTagSelectBox('item.php', 'untagged',
+					_AM_CATALOGUE_ITEM_ALL_ITEMS, TRUE, icms::$module->getVar('mid'), 'item', TRUE);
+			} else {
+				$tag_select_box = $sprockets_tag_handler->getTagSelectBox('item.php', $clean_tag_id,
+					_AM_CATALOGUE_ITEM_ALL_ITEMS, TRUE, icms::$module->getVar('mid'), 'item', TRUE);
+			}
 			if (!empty($tag_select_box)) {
 				echo '<h3>' . _AM_CATALOGUE_ITEM_FILTER_BY_TAG . '</h3>';
 				echo $tag_select_box;
 			}
 			
-			if ($clean_tag_id) {
+			if ($clean_tag_id || $untagged_content) {
 				
 				// get a list of item IDs belonging to this tag
 				$criteria = new icms_db_criteria_Compo();
