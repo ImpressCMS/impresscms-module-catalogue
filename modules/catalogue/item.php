@@ -120,7 +120,7 @@ if($itemObj && !$itemObj->isNew()) {
 		$criteria = icms_buildCriteria(array('label_type' => '0'));
 		$tag_buffer = $sprockets_tag_handler->getList($criteria, TRUE, TRUE);
 
-		// append the tag to the News title and link RSS to tag-specific feed
+		// append the tag to the item title
 		if (array_key_exists($clean_tag_id, $tag_buffer) && ($clean_tag_id !== 0)) {
 			$icmsTpl->assign('catalogue_tag_name', $tag_buffer[$clean_tag_id]);
 			$icmsTpl->assign('catalogue_category_path', $tag_buffer[$clean_tag_id]);
@@ -143,21 +143,24 @@ if($itemObj && !$itemObj->isNew()) {
 
 	// RSS feed including autodiscovery link, which is inserted in the module header
 	global $xoTheme;
-	if (icms_get_module_status("sprockets") && $clean_tag_id) {
-		$icmsTpl->assign('catalogue_rss_link', 'rss.php?tag_id=' . $clean_tag_id);
-		$icmsTpl->assign('catalogue_rss_title', _CO_CATALOGUE_SUBSCRIBE_RSS_ON
-				. $tag_buffer[$clean_tag_id]);
-		$rss_attributes = array('type' => 'application/rss+xml',
-			'title' => $icmsConfig['sitename'] . ' - ' . $tag_buffer[$clean_tag_id]);
-		$rss_link = CATALOGUE_URL . 'rss.php?tag_id=' . $clean_tag_id;
-	} else {
+	if (icms_get_module_status("sprockets") && $clean_tag_id && array_key_exists($clean_tag_id, $tag_buffer)) {
+		$tagObj = $sprockets_tag_handler->get($clean_tag_id);
+		if ($tagObj->getVar('rss', 'e') == 1) {
+			$icmsTpl->assign('catalogue_rss_link', 'rss.php?tag_id=' . $clean_tag_id);
+			$icmsTpl->assign('catalogue_rss_title', _CO_CATALOGUE_SUBSCRIBE_RSS_ON
+					. $tag_buffer[$clean_tag_id]);
+			$rss_attributes = array('type' => 'application/rss+xml',
+				'title' => $icmsConfig['sitename'] . ' - ' . $tag_buffer[$clean_tag_id]);
+			$rss_link = CATALOGUE_URL . 'rss.php?tag_id=' . $clean_tag_id;
+		} else {
 			$icmsTpl->assign('catalogue_rss_link', 'rss.php');
 			$icmsTpl->assign('catalogue_rss_title', _CO_CATALOGUE_SUBSCRIBE_RSS);
 			$rss_attributes = array('type' => 'application/rss+xml',
 				'title' => $icmsConfig['sitename'] . ' - ' .  _CO_CATALOGUE_NEW);
 			$rss_link = CATALOGUE_URL . 'rss.php';
-	}
-	$xoTheme->addLink('alternate', $rss_link, $rss_attributes);
+		}
+		$xoTheme->addLink('alternate', $rss_link, $rss_attributes);
+	}	
 	
 	// list of articles, filtered by tags (if any), pagination and preferences
 	$itemObjects = array();

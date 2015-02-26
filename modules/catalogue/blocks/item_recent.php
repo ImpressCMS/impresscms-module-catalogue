@@ -71,13 +71,17 @@ function catalogue_item_recent_show($options) {
 		$criteria->setSort('date');
 		$criteria->setOrder('DESC');
 		$catalogue_item_array = $catalogue_item_handler->getObjects($criteria, TRUE, TRUE);
-	}	
-	foreach ($catalogue_item_array as $key => $value) {
-		$item = array();
-		$item['date'] = date('j/n/Y', $value->getVar('date', 'e'));
-		$item['itemLink'] = $value->getItemLinkWithSEOString();
-		$block['catalogue_items'][] = $item;
-		unset($item);
+	}
+	if (count($catalogue_item_array)) {
+		foreach ($catalogue_item_array as $key => $value) {
+			$item = array();
+			$item['date'] = date('j/n/Y', $value->getVar('date', 'e'));
+			$item['itemLink'] = $value->getItemLinkWithSEOString();
+			$block['catalogue_items'][] = $item;
+			unset($item);
+		}
+	} else {
+		$block = array();
 	}
 	return $block;
 }

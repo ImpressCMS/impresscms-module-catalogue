@@ -45,8 +45,64 @@ if (icms_get_module_status("sprockets")) {
 			$sprocketsModule->getVar('dirname'), 'sprockets');
 }
 
-// generates a feed of recent items across all tags
-if (empty($clean_tag_id) || !icms_get_module_status("sprockets")) {
+// Check that the tag exists and has RSS feeds enabled
+if ($clean_tag_id && icms_get_module_status("sprockets")) {
+	$tagObj = $sprockets_tag_handler->get($clean_tag_id);
+	if (!empty($tagObj) && !$tagObj->isNew()) {
+		if ($tagObj->getVar('rss', 'e') == 1) {
+			// need to remove html tags and problematic characters to meet RSS spec
+			$tagObj = $sprockets_tag_handler->get($clean_tag_id);
+			$site_name = encode_entities($icmsConfig['sitename']);
+			$tag_title = encode_entities($tagObj->getVar('title'));
+			$tag_description = strip_tags($tagObj->getVar('description'));
+			$tag_description = encode_entities($tag_description);
+
+			$catalogue_feed->title = $site_name . ' - ' . $tag_title;
+			$catalogue_feed->url = ICMS_URL;
+			$catalogue_feed->description = $tag_description;
+			$catalogue_feed->language = _LANGCODE;
+			$catalogue_feed->charset = _CHARSET;
+			$catalogue_feed->category = $catalogueModule->getVar('name');
+
+			$url = ICMS_URL . 'images/logo.gif';
+			$catalogue_feed->image = array('title' => $catalogue_feed->title, 'url' => $url,
+					'link' => CATALOGUE_URL . 'rss.php?tag_id=' . $tagObj->id());
+			$catalogue_feed->width = 144;
+			$catalogue_feed->atom_link = '"' . CATALOGUE_URL . 'rss.php?tag_id=' . $tagObj->id() . '"';
+
+			// retrieve items relevant to this tag using a JOIN to the taglinks table
+
+			$query = $rows = $tag_item_count = '';
+
+			$query = "SELECT * FROM " . $catalogue_item_handler->table . ", "
+					. $sprockets_taglink_handler->table
+					. " WHERE `item_id` = `iid`"
+					. " AND `online_status` = '1'"
+					. " AND `tid` = '" . $clean_tag_id . "'"
+					. " AND `mid` = '" . $catalogueModule->getVar('mid') . "'"
+					. " AND `item` = 'item'"
+					. " ORDER BY `date` DESC"
+					. " LIMIT " . $catalogueConfig['number_rss_items'];
+
+			$result = icms::$xoopsDB->query($query);
+
+			if (!$result) {
+				echo 'Error';
+				exit;
+
+			} else {
+				$rows = $catalogue_item_handler->convertResultSet($result);
+				foreach ($rows as $key => $row) {
+					$itemArray[$row->getVar('item_id')] = $row;
+				}
+			}
+		} else {
+			exit; // RSS feeds disabled for this tag
+		}
+	} else {
+		exit; // Tag does not exist
+	}
+} else {
 	$feed_title = _CO_CATALOGUE_NEW;
 	$site_name = encode_entities($icmsConfig['sitename']);
 
@@ -73,56 +129,6 @@ if (empty($clean_tag_id) || !icms_get_module_status("sprockets")) {
 	$criteria->setOrder('DESC');
 
 	$itemArray = $catalogue_item_handler->getObjects($criteria);
-
-} else {
-	
-	// need to remove html tags and problematic characters to meet RSS spec
-	$tagObj = $sprockets_tag_handler->get($clean_tag_id);
-	$site_name = encode_entities($icmsConfig['sitename']);
-	$tag_title = encode_entities($tagObj->getVar('title'));
-	$tag_description = strip_tags($tagObj->getVar('description'));
-	$tag_description = encode_entities($tag_description);
-
-	$catalogue_feed->title = $site_name . ' - ' . $tag_title;
-	$catalogue_feed->url = ICMS_URL;
-	$catalogue_feed->description = $tag_description;
-	$catalogue_feed->language = _LANGCODE;
-	$catalogue_feed->charset = _CHARSET;
-	$catalogue_feed->category = $catalogueModule->getVar('name');
-
-	$url = ICMS_URL . 'images/logo.gif';
-	$catalogue_feed->image = array('title' => $catalogue_feed->title, 'url' => $url,
-			'link' => CATALOGUE_URL . 'rss.php?tag_id=' . $tagObj->id());
-	$catalogue_feed->width = 144;
-	$catalogue_feed->atom_link = '"' . CATALOGUE_URL . 'rss.php?tag_id=' . $tagObj->id() . '"';
-	
-	// retrieve items relevant to this tag using a JOIN to the taglinks table
-
-	$query = $rows = $tag_item_count = '';
-
-	$query = "SELECT * FROM " . $catalogue_item_handler->table . ", "
-			. $sprockets_taglink_handler->table
-			. " WHERE `item_id` = `iid`"
-			. " AND `online_status` = '1'"
-			. " AND `tid` = '" . $clean_tag_id . "'"
-			. " AND `mid` = '" . $catalogueModule->getVar('mid') . "'"
-			. " AND `item` = 'item'"
-			. " ORDER BY `date` DESC"
-			. " LIMIT " . $catalogueConfig['number_rss_items'];
-
-	$result = icms::$xoopsDB->query($query);
-
-	if (!$result) {
-		echo 'Error';
-		exit;
-
-	} else {
-
-		$rows = $catalogue_item_handler->convertResultSet($result);
-		foreach ($rows as $key => $row) {
-			$itemArray[$row->getVar('item_id')] = $row;
-		}
-	}
 }
 
 // prepare an array of items
@@ -133,6 +139,11 @@ foreach($itemArray as $item) {
 	$user = $member_handler->getUser($item->getVar('submitter', 'e'));
 	$creator = $user->getVar('uname');
 	
+	// Strip the filtered by HTML purifier notices before they get encoded
+	$flattened_item['description'] = str_replace('<!-- filtered with htmlpurifier -->', '',
+			$flattened_item['description']);
+	$flattened_item['description'] = str_replace('<!-- input filtered -->', '',
+			$flattened_item['description']);
 	$creator = encode_entities($creator);
 	$description = encode_entities($flattened_item['description']);
 	$title = encode_entities($flattened_item['title']);

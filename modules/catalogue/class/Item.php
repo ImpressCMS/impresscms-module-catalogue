@@ -28,6 +28,7 @@ class CatalogueItem extends icms_ipf_seo_Object
 		$this->quickInitVar('title', XOBJ_DTYPE_TXTBOX, TRUE);
 		$this->initNonPersistableVar('tag', XOBJ_DTYPE_INT, 'tag', FALSE, FALSE, FALSE, TRUE);
 		$this->quickInitVar('description', XOBJ_DTYPE_TXTAREA, FALSE);
+		$this->quickInitVar('creator', XOBJ_DTYPE_TXTBOX, FALSE);
 		$this->quickInitVar('image', XOBJ_DTYPE_IMAGE, TRUE);
 		$this->quickInitVar('identifier', XOBJ_DTYPE_TXTBOX, FALSE);
 		$this->quickInitVar('weight', XOBJ_DTYPE_INT, TRUE, FALSE, FALSE, 0);
