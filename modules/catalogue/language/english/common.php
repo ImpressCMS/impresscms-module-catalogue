@@ -61,7 +61,7 @@ define("_CO_CATALOGUE_SUBSCRIBE_RSS_ON", "Subscribe to our newsfeed on: ");
 
 // tags
 define("_CO_CATALOGUE_ITEM_ALL_ITEMS", "All items");
-define("_CO_CATALOGUE_ITEM_SELECT_ITEMS", "-- Select items --");
+define("_CO_CATALOGUE_ITEM_SELECT_ITEMS", "-- All --");
 
 // other stuff
 define("_CO_CATALOGUE_NEW", "New products");
@@ -70,3 +70,4 @@ define("_CO_CATALOGUE_NEW_DSC", "A selection of the most recent products from ")
 // New in V1.15
 define("_CO_CATALOGUE_ITEM_CREATOR", "Creator");
 define("_CO_CATALOGUE_ITEM_CREATOR_DSC", "The artist or manufacturer of this item.");
+define("_CO_CATALOGUE_UNTAGGED", "Untagged");

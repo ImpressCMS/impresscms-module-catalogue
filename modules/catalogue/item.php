@@ -21,12 +21,13 @@ $sprocketsModule = icms_getModuleInfo('sprockets');
 
 // Sanitise input parameters
 $untagged_content = FALSE;
-$clean_item_id = isset($_GET['item_id']) ? intval($_GET['item_id']) : 0 ;
+$clean_item_id = isset($_GET['item_id']) ? (int)$_GET['item_id'] : 0 ;
 if (isset($_GET['tag_id'])) {
 	if ($_GET['tag_id'] == 'untagged') {
 		$untagged_content = TRUE;
 	}
 }
+$clean_tag_id = isset($_GET['tag_id']) ? (int)$_GET['tag_id'] : 0;
 $itemObj = $catalogue_item_handler->get($clean_item_id);
 
 // check if single item is set online, if not, torch it
@@ -99,8 +100,7 @@ if($itemObj && !$itemObj->isNew()) {
 	///////////////// DISPLAY ITEM INDEX PAGE //////////////////////
 	////////////////////////////////////////////////////////////////
 	
-	$clean_start = isset($_GET['start']) ? intval($_GET['start']) : 0;
-	$clean_tag_id = isset($_GET['tag_id']) ? intval($_GET['tag_id']) : 0;
+	$clean_start = isset($_GET['start']) ? (int)$_GET['start'] : 0;
 	
 	$item_count = $style = $number_items_per_row = '';
 	$itemObjects = $catalogue_items = array();
@@ -121,11 +121,13 @@ if($itemObj && !$itemObj->isNew()) {
 		$tag_buffer = $sprockets_tag_handler->getList($criteria, TRUE, TRUE);
 
 		// append the tag to the item title
-		if (array_key_exists($clean_tag_id, $tag_buffer) && ($clean_tag_id !== 0)) {
+		if ($untagged_content) {
+			$icmsTpl->assign('catalogue_tag_name', _CO_CATALOGUE_UNTAGGED);
+			$icmsTpl->assign('catalogue_category_path', _CO_CATALOGUE_UNTAGGED);
+		} elseif (array_key_exists($clean_tag_id, $tag_buffer) && ($clean_tag_id !== 0)) {
 			$icmsTpl->assign('catalogue_tag_name', $tag_buffer[$clean_tag_id]);
 			$icmsTpl->assign('catalogue_category_path', $tag_buffer[$clean_tag_id]);
-		} else {
-			$icmsTpl->assign('catalogue_tag_name', _CO_CATALOGUE_ITEM_ALL_ITEMS);
+			
 		}
 		if (icms::$module->config['show_tag_select_box'] == TRUE) {
 			// prepare a tag navigation select box
@@ -160,7 +162,13 @@ if($itemObj && !$itemObj->isNew()) {
 			$rss_link = CATALOGUE_URL . 'rss.php';
 		}
 		$xoTheme->addLink('alternate', $rss_link, $rss_attributes);
-	}	
+	} else {
+		$icmsTpl->assign('catalogue_rss_link', 'rss.php');
+		$icmsTpl->assign('catalogue_rss_title', _CO_CATALOGUE_SUBSCRIBE_RSS);
+		$rss_attributes = array('type' => 'application/rss+xml',
+			'title' => $icmsConfig['sitename'] . ' - ' .  _CO_CATALOGUE_NEW);
+			$rss_link = CATALOGUE_URL . 'rss.php';
+	}
 	
 	// list of articles, filtered by tags (if any), pagination and preferences
 	$itemObjects = array();
