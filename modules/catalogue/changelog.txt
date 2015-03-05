@@ -32,3 +32,4 @@ Version 1.15 (unreleased)
 - Added 'creator' field.
 - Add support for untagged content in index page and recent items block.
 - Prevent recent items block from displaying if it has no content.
+- Change image control to imageupload.

@@ -64,7 +64,7 @@ class CatalogueItem extends icms_ipf_seo_Object
 		$this->setControl('description', 'dhtmltextarea');
 
 		// product image
-		$this->setControl('image', array('name' => 'image'));
+		$this->setControl('image', array('name' => 'imageupload'));
 		$url = ICMS_URL . '/uploads/' . basename(dirname(dirname(__FILE__))) . '/';
 		$path = ICMS_ROOT_PATH . '/uploads/' . basename(dirname(dirname(__FILE__))) . '/';
 		$this->setImageDir($url, $path);
